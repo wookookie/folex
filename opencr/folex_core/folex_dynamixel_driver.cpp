@@ -4,9 +4,12 @@
 
 
 FolexDynamixelDriver::FolexDynamixelDriver()
-: baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION), left_front_id_(LEFT_FRONT)
+: baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION),
+  joint_1_id_(JOINT_1),
+  joint_2_id_(JOINT_2),
+  joint_3_id_(JOINT_3)
 {
-
+  torque_ = false;
 }
 
 FolexDynamixelDriver::~FolexDynamixelDriver()
@@ -31,7 +34,8 @@ bool FolexDynamixelDriver::init()
     return false;
   }
 
-  groupSyncWrite_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_GOAL_POSITION, LEN_AX_GOAL_POSITION);
+  groupSyncWriteXL_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_XL_GOAL_POSITION, LEN_XL_GOAL_POSITION);
+  groupSyncWriteAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_GOAL_POSITION, LEN_AX_GOAL_POSITION);
 
   return true;
 }
@@ -42,26 +46,67 @@ void FolexDynamixelDriver::close()
   portHandler_->closePort();
 }
 
+bool FolexDynamixelDriver::setTorque(bool onoff)
+{
+  uint8_t dxl_error = 0;
+  int dxl_comm_result = COMM_TX_FAIL;
+
+  torque_ = onoff;
+
+  dxl_comm_result = packetHandler_->write1ByteTxRx(portHandler_, JOINT_1, ADDR_XL_TORQUE_ENABLE, onoff, &dxl_error);
+  if(dxl_comm_result != COMM_SUCCESS)
+  {
+    return false;
+  }
+
+  return true;
+}
+
 bool FolexDynamixelDriver::writePosition()
 {
-  bool dxl_addparam_result;
-  uint8_t left_ax_data_byte[2];
+  bool dxl_xl_addparam_result;
+  bool dxl_ax_addparam_result;
 
-  left_ax_data_byte[0] = DXL_LOBYTE(AX_TEST_POSITION);
-  left_ax_data_byte[1] = DXL_HIBYTE(AX_TEST_POSITION);
+  uint8_t xl_data_byte[4];
+  uint8_t ax_data_byte[2];
 
-  dxl_addparam_result = groupSyncWrite_->addParam(left_front_id_, left_ax_data_byte);
-  if (dxl_addparam_result != true)
+  xl_data_byte[0] = DXL_LOBYTE(DXL_LOWORD(XL_TEST_POSITION));
+  xl_data_byte[1] = DXL_HIBYTE(DXL_LOWORD(XL_TEST_POSITION));
+  xl_data_byte[2] = DXL_LOBYTE(DXL_HIWORD(XL_TEST_POSITION));
+  xl_data_byte[3] = DXL_HIBYTE(DXL_HIWORD(XL_TEST_POSITION));
+
+  ax_data_byte[0] = DXL_LOBYTE(AX_TEST_POSITION);
+  ax_data_byte[1] = DXL_HIBYTE(AX_TEST_POSITION);
+
+  setTorque(TORQUE_ENABLE);
+
+  dxl_xl_addparam_result = groupSyncWriteXL_->addParam(joint_1_id_, xl_data_byte);
+  if (dxl_xl_addparam_result != true)
   {
     return false;
   }
 
-  dxl_addparam_result = groupSyncWrite_->txPacket();
-  if (dxl_addparam_result != COMM_SUCCESS)
+  dxl_ax_addparam_result = groupSyncWriteAX_->addParam(joint_2_id_, ax_data_byte);
+  if (dxl_ax_addparam_result != true)
   {
     return false;
   }
 
-  groupSyncWrite_->clearParam();
-  return true;  
+  dxl_xl_addparam_result = groupSyncWriteXL_->txPacket();
+  if (dxl_xl_addparam_result != COMM_SUCCESS)
+  {
+    return false;
+  }
+
+  dxl_ax_addparam_result = groupSyncWriteAX_->txPacket();
+  if (dxl_ax_addparam_result != COMM_SUCCESS)
+  {
+    return false;
+  }
+
+  groupSyncWriteXL_->clearParam();
+  return true;
+
+  groupSyncWriteAX_->clearParam();
+  return true;
 }
