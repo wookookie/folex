@@ -20,9 +20,12 @@
 // Control table address
 #define ADDR_AX_TORQUE_ENABLE     24
 #define ADDR_AX_GOAL_POSITION     30
+#define ADDR_AX_MOVING_SPEED      32
 #define ADDR_AX_PRESENT_POSITION  36
+#define ADDR_AX_PRESENT_SPEED     38
 // Data byte length
 #define LEN_AX_GOAL_POSITION      2
+#define LEN_AX_MOVING_SPEED       2
 
 
 // Dynamixel parameters
@@ -40,8 +43,9 @@
 #define JOINT_3                   3           // AX-12A
 
 // Test
-#define XL_TEST_POSITION          2100
-#define AX_TEST_POSITION          600
+#define XL_TEST_POSITION          2048
+#define AX_TEST_POSITION          750
+#define AX_TEST_RPM               15
 
 
 class FolexDynamixelDriver
@@ -67,7 +71,8 @@ private:
   dynamixel::PacketHandler *packetHandler_;
 
   dynamixel::GroupSyncWrite *groupSyncWriteXL_;
-  dynamixel::GroupSyncWrite *groupSyncWriteAX_;
+  dynamixel::GroupSyncWrite *groupSyncWritePositionAX_;
+  dynamixel::GroupSyncWrite *groupSyncWriteRpmAX_;
 };
 
 #endif // FOLEX_DYNAMIXEL_DRIVER_H

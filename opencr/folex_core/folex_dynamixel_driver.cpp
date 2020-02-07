@@ -35,7 +35,8 @@ bool FolexDynamixelDriver::init()
   }
 
   groupSyncWriteXL_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_XL_GOAL_POSITION, LEN_XL_GOAL_POSITION);
-  groupSyncWriteAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_GOAL_POSITION, LEN_AX_GOAL_POSITION);
+  groupSyncWritePositionAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_GOAL_POSITION, LEN_AX_GOAL_POSITION);
+  groupSyncWriteRpmAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_MOVING_SPEED, LEN_AX_MOVING_SPEED);
 
   return true;
 }
@@ -69,6 +70,7 @@ bool FolexDynamixelDriver::writePosition()
 
   uint8_t xl_data_byte[4];
   uint8_t ax_data_byte[2];
+  uint8_t ax_rpm_data_byte[2];
 
   xl_data_byte[0] = DXL_LOBYTE(DXL_LOWORD(XL_TEST_POSITION));
   xl_data_byte[1] = DXL_HIBYTE(DXL_LOWORD(XL_TEST_POSITION));
@@ -78,6 +80,9 @@ bool FolexDynamixelDriver::writePosition()
   ax_data_byte[0] = DXL_LOBYTE(AX_TEST_POSITION);
   ax_data_byte[1] = DXL_HIBYTE(AX_TEST_POSITION);
 
+  ax_rpm_data_byte[0] = DXL_LOBYTE(AX_TEST_RPM);
+  ax_rpm_data_byte[1] = DXL_HIBYTE(AX_TEST_RPM);
+
   setTorque(TORQUE_ENABLE);
 
   dxl_xl_addparam_result = groupSyncWriteXL_->addParam(joint_1_id_, xl_data_byte);
@@ -86,7 +91,13 @@ bool FolexDynamixelDriver::writePosition()
     return false;
   }
 
-  dxl_ax_addparam_result = groupSyncWriteAX_->addParam(joint_2_id_, ax_data_byte);
+  dxl_ax_addparam_result = groupSyncWritePositionAX_->addParam(joint_2_id_, ax_data_byte);
+  if (dxl_ax_addparam_result != true)
+  {
+    return false;
+  }
+
+  dxl_ax_addparam_result = groupSyncWriteRpmAX_->addParam(joint_2_id_, ax_rpm_data_byte);
   if (dxl_ax_addparam_result != true)
   {
     return false;
@@ -98,7 +109,13 @@ bool FolexDynamixelDriver::writePosition()
     return false;
   }
 
-  dxl_ax_addparam_result = groupSyncWriteAX_->txPacket();
+  dxl_ax_addparam_result = groupSyncWritePositionAX_->txPacket();
+  if (dxl_ax_addparam_result != COMM_SUCCESS)
+  {
+    return false;
+  }
+
+  dxl_ax_addparam_result = groupSyncWriteRpmAX_->txPacket();
   if (dxl_ax_addparam_result != COMM_SUCCESS)
   {
     return false;
@@ -107,6 +124,9 @@ bool FolexDynamixelDriver::writePosition()
   groupSyncWriteXL_->clearParam();
   return true;
 
-  groupSyncWriteAX_->clearParam();
+  groupSyncWritePositionAX_->clearParam();
+  return true;
+
+  groupSyncWriteRpmAX_->clearParam();
   return true;
 }
