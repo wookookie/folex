@@ -6,6 +6,7 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
+#include "folex_diagnosis.h"
 #include "folex_dynamixel_driver.h"
 
 
@@ -14,6 +15,9 @@ ros::NodeHandle nh;
 
 std_msgs::String dxl_status;
 
+
+// OpenCR diagnosis
+FolexDiagnosis diagnosis;
 
 // Dynamixel Class
 FolexDynamixelDriver dynamixel_driver;
