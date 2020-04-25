@@ -30,22 +30,22 @@
 /* DYNAMIXEL ID */
 // FRONT-LEFT
 #define JOINT_1                   1           // XL430-W250-T
-#define JOINT_5                   5           // AX-12A
-#define JOINT_9                   9           // AX-12A
+#define JOINT_2                   2           // AX-12A
+#define JOINT_3                   3           // AX-12A
 
 // FRONT-RIGHT
-#define JOINT_2                   2           // XL430-W250-T
+#define JOINT_4                   4           // XL430-W250-T
+#define JOINT_5                   5           // AX-12A
 #define JOINT_6                   6           // AX-12A
-#define JOINT_10                  10          // AX-12A
 
 // REAR-LEFT
-#define JOINT_3                   3           // XL430-W250-T
-#define JOINT_7                   7           // AX-12A
-#define JOINT_11                  11          // AX-12A
+#define JOINT_7                   7           // XL430-W250-T
+#define JOINT_8                   8           // AX-12A
+#define JOINT_9                   9           // AX-12A
 
 // REAR-RIGHT
-#define JOINT_4                   4           // XL430-W250-T
-#define JOINT_8                   8           // AX-12A
+#define JOINT_10                  10          // XL430-W250-T
+#define JOINT_11                  11          // AX-12A
 #define JOINT_12                  12          // AX-12A
 
 
@@ -60,8 +60,8 @@
 
 // Test
 #define XL_TEST_POSITION          2048
-#define AX_TEST_POSITION          750
-#define AX_TEST_RPM               15
+#define AX_TEST_POSITION          512
+#define AX_TEST_RPM               100
 
 
 class FolexDynamixelDriver
@@ -79,10 +79,10 @@ private:
   float protocol_version_;
   bool torque_;
 
-  uint8_t joint_1_id_, joint_5_id_, joint_9_id_;
-  uint8_t joint_2_id_, joint_6_id_, joint_10_id_;
-  uint8_t joint_3_id_, joint_7_id_, joint_11_id_;
-  uint8_t joint_4_id_, joint_8_id_, joint_12_id_;
+  uint8_t joint_1_id_, joint_2_id_, joint_3_id_;
+  uint8_t joint_4_id_, joint_5_id_, joint_6_id_;
+  uint8_t joint_7_id_, joint_8_id_, joint_9_id_;
+  uint8_t joint_10_id_, joint_11_id_, joint_12_id_;
 
   dynamixel::PortHandler *portHandler_;
   dynamixel::PacketHandler *packetHandler_;

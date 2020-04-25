@@ -5,9 +5,10 @@
 
 FolexDynamixelDriver::FolexDynamixelDriver()
 : baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION),
-  joint_1_id_(JOINT_1),
-  joint_2_id_(JOINT_2),
-  joint_3_id_(JOINT_3)
+  joint_1_id_(JOINT_1), joint_2_id_(JOINT_2), joint_3_id_(JOINT_3),
+  joint_4_id_(JOINT_4), joint_5_id_(JOINT_5), joint_6_id_(JOINT_6),
+  joint_7_id_(JOINT_7), joint_8_id_(JOINT_8), joint_9_id_(JOINT_9),
+  joint_10_id_(JOINT_10), joint_11_id_(JOINT_11), joint_12_id_(JOINT_12)
 {
   torque_ = false;
 }
