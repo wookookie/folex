@@ -6,8 +6,7 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
-#include "folex_diagnosis.h"
-#include "folex_dynamixel_driver.h"
+#include "Folex.h"
 
 
 // ROS NodeHandle
