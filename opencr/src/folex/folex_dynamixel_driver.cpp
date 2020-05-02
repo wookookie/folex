@@ -1,4 +1,4 @@
-// 
+//
 
 #include "folex_dynamixel_driver.h"
 

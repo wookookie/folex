@@ -6,7 +6,7 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
-#include "Folex.h"
+#include "include/folex/folex.h"
 
 
 // ROS NodeHandle
