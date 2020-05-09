@@ -6,7 +6,7 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
-#include "include/folex/folex.h"
+#include "folex.h"
 
 
 // ROS NodeHandle
@@ -14,13 +14,10 @@ ros::NodeHandle nh;
 
 std_msgs::String dxl_status;
 
-
-// OpenCR diagnosis
-FolexDiagnosis diagnosis;
-
-// Dynamixel Class
-FolexDynamixelDriver dynamixel_driver;
-
+// Class
+Folex folex;
+FolexDiagnosis diagnosis;  // OpenCR diagnosis
+FolexDynamixelDriver dynamixel_driver;  // Dynamixel driver
 
 // Publisher
 ros::Publisher dxl_status_pub("dynamixel_status", &dxl_status);

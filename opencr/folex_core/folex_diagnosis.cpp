@@ -22,6 +22,6 @@ void FolexDiagnosis::init()
 void FolexDiagnosis::showLedStatus()
 {
   digitalWrite(BDPIN_LED_USER_1, LOW);
-  delay(500);
+  delay(1000);
   digitalWrite(BDPIN_LED_USER_1, HIGH);
 }

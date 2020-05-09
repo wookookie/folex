@@ -10,48 +10,24 @@ void setup()
 
   diagnosis.init();
 
-  if (dynamixel_driver.init() == false)
-  {
-    diagnosis.showLedStatus();
-  }
-  
-  if (dynamixel_driver.writePosition() == false)
-  {
-    diagnosis.showLedStatus();
-  }
+  dynamixel_driver.init();
+
 }
 
 void loop()
 {
-  startLogMsg();
+  dynamixel_driver.setTorque(1, TORQUE_ENABLE);
+  dynamixel_driver.writeValue(1, ADDR_XL_GOAL_POSITION, 2048);
+
   delay(500);
 
-  sendLogMsg();
+  dynamixel_driver.setTorque(2, TORQUE_ENABLE);
+  dynamixel_driver.writeValue(2, ADDR_AX_GOAL_POSITION, 512);
+
   delay(500);
 
-  nh.spinOnce();
-}
+  dynamixel_driver.setTorque(3, TORQUE_ENABLE);
+  dynamixel_driver.writeValue(3, ADDR_AX_GOAL_POSITION, 512);
 
-
-// Functions
-void sendLogMsg()
-{
-  char msg[100];
-
-  if (nh.connected())
-  {
-    sprintf(msg, "Connected to OpenCR Board!");
-    nh.loginfo(msg);
-  }
-}
-
-void startLogMsg()
-{
-  char msg[100];
-
-  if (nh.connected())
-  {
-    sprintf(msg, "--- LOOP Start ---");
-    nh.loginfo(msg);
-  }
+  //nh.spinOnce();
 }
