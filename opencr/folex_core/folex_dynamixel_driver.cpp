@@ -1,16 +1,32 @@
-// 
+//
 
 #include "folex_dynamixel_driver.h"
 
 
 FolexDynamixelDriver::FolexDynamixelDriver()
-: baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION),
-  joint_1_id_(JOINT_1), joint_2_id_(JOINT_2), joint_3_id_(JOINT_3),
-  joint_4_id_(JOINT_4), joint_5_id_(JOINT_5), joint_6_id_(JOINT_6),
-  joint_7_id_(JOINT_7), joint_8_id_(JOINT_8), joint_9_id_(JOINT_9),
-  joint_10_id_(JOINT_10), joint_11_id_(JOINT_11), joint_12_id_(JOINT_12)
+: baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION)
 {
-  torque_ = false;
+  // Dynamixel Model Number and ID
+  dxl_array_.insert(std::make_pair(JOINT_1, XL430_W250));
+  dxl_array_.insert(std::make_pair(JOINT_2, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_3, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_4, XL430_W250));
+  dxl_array_.insert(std::make_pair(JOINT_5, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_6, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_7, XL430_W250));
+  dxl_array_.insert(std::make_pair(JOINT_8, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_9, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_10, XL430_W250));
+  dxl_array_.insert(std::make_pair(JOINT_11, AX_12A));
+  dxl_array_.insert(std::make_pair(JOINT_12, AX_12A));
+
+  // Dynamixel Address and Size
+  dxl_xl_address_array_.insert(std::make_pair(ADDR_XL_TORQUE_ENABLE, BYTE));
+  dxl_xl_address_array_.insert(std::make_pair(ADDR_XL_GOAL_POSITION, DWORD));
+  dxl_xl_address_array_.insert(std::make_pair(ADDR_XL_GOAL_VELOCITY, DWORD));
+  dxl_ax_address_array_.insert(std::make_pair(ADDR_AX_TORQUE_ENABLE, BYTE));
+  dxl_ax_address_array_.insert(std::make_pair(ADDR_AX_GOAL_POSITION, WORD));
+  dxl_ax_address_array_.insert(std::make_pair(ADDR_AX_MOVING_SPEED, WORD));
 }
 
 FolexDynamixelDriver::~FolexDynamixelDriver()
@@ -35,10 +51,6 @@ bool FolexDynamixelDriver::init()
     return false;
   }
 
-  groupSyncWriteXL_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_XL_GOAL_POSITION, LEN_XL_GOAL_POSITION);
-  groupSyncWritePositionAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_GOAL_POSITION, LEN_AX_GOAL_POSITION);
-  groupSyncWriteRpmAX_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_AX_MOVING_SPEED, LEN_AX_MOVING_SPEED);
-
   return true;
 }
 
@@ -48,86 +60,114 @@ void FolexDynamixelDriver::close()
   portHandler_->closePort();
 }
 
-bool FolexDynamixelDriver::setTorque(bool onoff)
+void FolexDynamixelDriver::addDynamixel(std::string name, std::string parent_name, std::string child_name)
 {
+
+
+}
+
+bool FolexDynamixelDriver::setTorque(uint8_t id, bool onoff)
+{
+  bool result = false;
   uint8_t dxl_error = 0;
-  int dxl_comm_result = COMM_TX_FAIL;
 
-  torque_ = onoff;
-
-  dxl_comm_result = packetHandler_->write1ByteTxRx(portHandler_, JOINT_1, ADDR_XL_TORQUE_ENABLE, onoff, &dxl_error);
-  if(dxl_comm_result != COMM_SUCCESS)
+  if (dxl_array_.find(id)->second == XL430_W250)
   {
-    return false;
+    result = packetHandler_->write1ByteTxRx(portHandler_, id, ADDR_XL_TORQUE_ENABLE, onoff, &dxl_error);
   }
-
-  return true;
+  else if (dxl_array_.find(id)->second == AX_12A)
+  {
+    result = packetHandler_->write1ByteTxRx(portHandler_, id, ADDR_AX_TORQUE_ENABLE, onoff, &dxl_error);
+  }
+  else
+  {
+    // error
+  }
+  
+  return result;
 }
 
-bool FolexDynamixelDriver::writePosition()
+bool FolexDynamixelDriver::enableDynamixel()
 {
-  bool dxl_xl_addparam_result;
-  bool dxl_ax_addparam_result;
+  bool result = false;
+  std::map<uint8_t, uint16_t>::iterator it_dynamixel_array;
 
-  uint8_t xl_data_byte[4];
-  uint8_t ax_data_byte[2];
-  uint8_t ax_rpm_data_byte[2];
-
-  xl_data_byte[0] = DXL_LOBYTE(DXL_LOWORD(XL_TEST_POSITION));
-  xl_data_byte[1] = DXL_HIBYTE(DXL_LOWORD(XL_TEST_POSITION));
-  xl_data_byte[2] = DXL_LOBYTE(DXL_HIWORD(XL_TEST_POSITION));
-  xl_data_byte[3] = DXL_HIBYTE(DXL_HIWORD(XL_TEST_POSITION));
-
-  ax_data_byte[0] = DXL_LOBYTE(AX_TEST_POSITION);
-  ax_data_byte[1] = DXL_HIBYTE(AX_TEST_POSITION);
-
-  ax_rpm_data_byte[0] = DXL_LOBYTE(AX_TEST_RPM);
-  ax_rpm_data_byte[1] = DXL_HIBYTE(AX_TEST_RPM);
-
-  setTorque(TORQUE_ENABLE);
-
-  dxl_xl_addparam_result = groupSyncWriteXL_->addParam(joint_1_id_, xl_data_byte);
-  if (dxl_xl_addparam_result != true)
+  for (it_dynamixel_array = dxl_array_.begin(); it_dynamixel_array != dxl_array_.end(); it_dynamixel_array++)
   {
-    return false;
+    result = setTorque(it_dynamixel_array->first, TORQUE_ENABLE);
   }
 
-  dxl_ax_addparam_result = groupSyncWritePositionAX_->addParam(joint_2_id_, ax_data_byte);
-  if (dxl_ax_addparam_result != true)
-  {
-    return false;
-  }
-
-  dxl_ax_addparam_result = groupSyncWriteRpmAX_->addParam(joint_2_id_, ax_rpm_data_byte);
-  if (dxl_ax_addparam_result != true)
-  {
-    return false;
-  }
-
-  dxl_xl_addparam_result = groupSyncWriteXL_->txPacket();
-  if (dxl_xl_addparam_result != COMM_SUCCESS)
-  {
-    return false;
-  }
-
-  dxl_ax_addparam_result = groupSyncWritePositionAX_->txPacket();
-  if (dxl_ax_addparam_result != COMM_SUCCESS)
-  {
-    return false;
-  }
-
-  dxl_ax_addparam_result = groupSyncWriteRpmAX_->txPacket();
-  if (dxl_ax_addparam_result != COMM_SUCCESS)
-  {
-    return false;
-  }
-
-  groupSyncWriteXL_->clearParam();
-  return true;
-
-  groupSyncWritePositionAX_->clearParam();
-  return true;
-
-  groupSyncWriteRpmAX_->clearParam();
-  return true;
+  return result;
 }
+
+bool FolexDynamixelDriver::disableDynamixel()
+{
+  bool result = false;
+  std::map<uint8_t, uint16_t>::iterator it_dynamixel_array;
+
+  for (it_dynamixel_array = dxl_array_.begin(); it_dynamixel_array != dxl_array_.end(); it_dynamixel_array++)
+  {
+    result = setTorque(it_dynamixel_array->first, TORQUE_DISABLE);
+  }
+
+  return result;
+}
+
+void FolexDynamixelDriver::moveDynamixel(double j1, double j2, double j3, double time)
+{
+  
+  
+}
+
+bool FolexDynamixelDriver::writeValue(uint8_t id, uint16_t address, uint32_t value)
+{
+  bool result = false;
+  uint8_t dxl_error = 0;
+
+  // XL430 or AX-12A
+  if (dxl_array_.find(id)->second == XL430_W250)
+  {
+    switch (dxl_xl_address_array_.find(address)->second)
+    {
+    case BYTE:
+      result = packetHandler_->write1ByteTxRx(portHandler_, id, address, value, &dxl_error);
+      break;
+
+    case WORD:
+      result = packetHandler_->write2ByteTxRx(portHandler_, id, address, value, &dxl_error);
+      break;
+
+    case DWORD:
+      result = packetHandler_->write4ByteTxRx(portHandler_, id, address, value, &dxl_error);
+      break;
+    
+    default:
+      result = false;
+      break;
+    }
+  }
+  else if (dxl_array_.find(id)->second == AX_12A)
+  {
+    switch (dxl_ax_address_array_.find(address)->second)
+    {
+    case BYTE:
+      result = packetHandler_->write1ByteTxRx(portHandler_, id, address, value, &dxl_error);
+      break;
+
+    case WORD:
+      result = packetHandler_->write2ByteTxRx(portHandler_, id, address, value, &dxl_error);
+      break;
+    
+    default:
+      result = false;
+      break;
+    }
+  }
+  else
+  {
+    // error
+  }
+
+  return result;
+}
+
