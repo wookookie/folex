@@ -16,8 +16,6 @@ std_msgs::String dxl_status;
 
 // Class
 Folex folex;
-FolexDiagnosis diagnosis;  // OpenCR diagnosis
-FolexDynamixelDriver dynamixel_driver;  // Dynamixel driver
 
 // Publisher
 ros::Publisher dxl_status_pub("dynamixel_status", &dxl_status);

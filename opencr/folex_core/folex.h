@@ -17,7 +17,8 @@ typedef struct
 class Folex
 {
 private:
-	FolexDynamixelDriver *dynamixel_driver;
+	FolexDiagnosis diagnosis;
+	FolexDynamixelDriver dynamixel_driver;
 
 
 
@@ -26,7 +27,7 @@ public:
 	Folex();
 	~Folex();
 
-	void initFolex();
+	bool initFolex();
 
 
 
