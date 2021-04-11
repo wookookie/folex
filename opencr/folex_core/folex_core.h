@@ -12,13 +12,18 @@
 // ROS NodeHandle
 ros::NodeHandle nh;
 
+std_msgs::String msg;
 std_msgs::String dxl_status;
 
 // Class
 Folex folex;
 
 // Publisher
+ros::Publisher chatter_pub("chatter", &msg);
+
 ros::Publisher dxl_status_pub("dynamixel_status", &dxl_status);
+
+static uint32_t pre_time;
 
 
 // Functions

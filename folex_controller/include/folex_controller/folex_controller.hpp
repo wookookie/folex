@@ -3,12 +3,9 @@
 #ifndef FOLEX_CONTROLLER_HPP
 #define FOLEX_CONTROLLER_HPP
 
-
-#include <unistd.h>
-
 #include <ros/ros.h>
 
-#include <std_msgs/Empty.h>
+#include <std_msgs/String.h>
 
 
 class FolexController
@@ -21,9 +18,6 @@ public:
 
 private:
   ros::NodeHandle nh_;
-  ros::NodeHandle priv_nh_;
-
-
 };
 
 

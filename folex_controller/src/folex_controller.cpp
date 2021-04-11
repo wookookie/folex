@@ -13,6 +13,11 @@ FolexController::~FolexController()
 
 }
 
+void chatterCallback(const std_msgs::String::ConstPtr& msg)
+{
+  ROS_INFO("HEY!! : ", msg->data.c_str());
+}
+
 
 
 int main(int argc, char** argv)
@@ -39,10 +44,9 @@ int main(int argc, char** argv)
 
   FolexController controller(usb_port, baud_rate);
 
-  while (ros::ok())
-  {
-    ros::spinOnce();
-  }
+  ros::Subscriber sub = nh.subscribe("chatter", 1000, chatterCallback);
+
+  ros::spin();
 
   return 0;  
 }
