@@ -1,5 +1,0 @@
-<launch>
-  <include file="$(find folex_bringup)/launch/folex_core.launch"/>
-
-  <node pkg="folex_bringup" type="folex_diagnostics" name="folex_diagnostics" output="screen"/>
-</launch>

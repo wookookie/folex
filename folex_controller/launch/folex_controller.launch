@@ -1,0 +1,7 @@
+<launch>
+  <arg name="usb_port"      defalut="/dev/ttyACM0"/>
+  <arg name="baud_rate"     defalut="1000000"/>
+
+  <node name="folex_controller" pkg="folex_controller" type="folex_controller" output="screen">
+  </node>
+</launch>
