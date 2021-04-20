@@ -5,6 +5,7 @@
 
 #include <ros.h>
 #include <std_msgs/String.h>
+#include <sensor_msgs/JointState.h>
 
 #include "folex.h"
 
@@ -15,11 +16,14 @@ ros::NodeHandle nh;
 std_msgs::String msg;
 std_msgs::String dxl_status;
 
+sensor_msgs::JointState joint_states;
+
 // Class
 Folex folex;
 
 // Publisher
 ros::Publisher chatter_pub("chatter", &msg);
+ros::Publisher joint_states_pub("joint_states", &joint_states);
 
 ros::Publisher dxl_status_pub("dynamixel_status", &dxl_status);
 

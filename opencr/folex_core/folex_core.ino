@@ -8,23 +8,36 @@ void setup()
   nh.initNode();
   nh.getHardware()->setBaud(1000000);
 
-  nh.advertise(chatter_pub);
+  folex.initFolex();
 
-  
-  //folex.initFolex();
 }
 
 void loop()
 {
-  std::string message;
-  message = "TEST TEST";
+  // sendLogMsg();
+  // nh.spinOnce();
 
-  if (millis() - pre_time >= 50)
+  folex.gaitTrot();
+}
+
+
+void sendLogMsg()
+{
+  static bool log_flag = false;
+  char log_msg[100];
+
+  if (nh.connected())
   {
-    msg.data = message.c_str();
-    chatter_pub.publish(&msg);
-    pre_time = millis();
-  }
-  
-  nh.spinOnce();
+    if (log_flag == false)
+    {
+      sprintf(log_msg, "Connected to OpenCR board!");
+      nh.loginfo(log_msg);
+
+      log_flag = true;
+    }
+    else
+    {
+      log_flag = false;
+    }
+  }  
 }

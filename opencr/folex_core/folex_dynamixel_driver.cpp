@@ -2,6 +2,9 @@
 
 #include "folex_dynamixel_driver.h"
 
+// Temp
+#include "kinematics.h"
+
 
 FolexDynamixelDriver::FolexDynamixelDriver()
 : baudrate_(BAUDRATE), protocol_version_(PROTOCOL_VERSION)
@@ -51,6 +54,7 @@ bool FolexDynamixelDriver::init()
     return false;
   }
 
+  // TODO : Adverties status
   return true;
 }
 
@@ -113,7 +117,7 @@ bool FolexDynamixelDriver::disableDynamixel()
   return result;
 }
 
-void FolexDynamixelDriver::initPosition()
+void FolexDynamixelDriver::resetPosition()
 {
   // Set RPM
   double init_rpm = 5.0;
@@ -146,7 +150,7 @@ void FolexDynamixelDriver::initPosition()
     writeValue(id, ADDR_XL_GOAL_POSITION, 2048);
   }
 
-  delay(500);
+  delay(2000);
 
   std::vector<uint16_t> value;
   value.clear();
@@ -154,10 +158,10 @@ void FolexDynamixelDriver::initPosition()
   value.push_back(310);
   value.push_back(413);
   value.push_back(724);
-  value.push_back(413);
-  value.push_back(724);
   value.push_back(620);
   value.push_back(310);
+  value.push_back(413);
+  value.push_back(724);
 
   for (uint8_t id = 1; id < 9; id++)
   {
@@ -237,4 +241,289 @@ uint16_t FolexDynamixelDriver::convertRpmToValue(uint16_t dxl_model, double rpm)
   }
   
   return value;
+}
+
+/*
+*
+*   TEST TEST TEST TEST
+*
+*/
+void FolexDynamixelDriver::test()
+{
+  // Set RPM
+  double init_rpm = 5.0;
+  std::map<uint8_t, uint16_t>::iterator it_dxl_array;
+  
+  for (uint8_t id = 1; id < 13; id++)
+  {
+    if (dxl_array_.find(id)->second == AX_12A)
+    {
+      writeValue(id, ADDR_AX_MOVING_SPEED, convertRpmToValue(AX_12A, init_rpm));
+    }
+    else if (dxl_array_.find(id)->second == XL430_W250)
+    {
+      writeValue(id, ADDR_XL_PROFILE_VELOCITY, convertRpmToValue(XL430_W250, init_rpm));
+    }
+    else
+    {
+      // error
+    }   
+  }
+
+  Kinematics kinematics;
+  kinematics.solveLegIK(7.425, 0, -129.7739);
+
+  float target_upper_joint = (150 + kinematics.upper_leg_joint) / 0.2932f;
+  float target_lower_joint = (150 + kinematics.lower_leg_joint) / 0.2932f;
+
+  std::vector<uint16_t> value;
+  value.clear();
+  value.push_back(target_upper_joint);
+  value.push_back(target_lower_joint);
+
+  for (uint8_t id = 3; id < 5; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 3));
+  }
+
+    for (uint8_t id = 7; id < 9; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 7));
+  }
+
+
+  target_upper_joint = (150 - kinematics.upper_leg_joint) / 0.2932f;
+  target_lower_joint = (150 - kinematics.lower_leg_joint) / 0.2932f;
+
+  value.clear();
+  value.push_back(target_upper_joint);
+  value.push_back(target_lower_joint);
+
+  for (uint8_t id = 1; id < 3; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 1));
+  }
+
+    for (uint8_t id = 5; id < 7; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 5));
+  }
+}
+
+void FolexDynamixelDriver::gaitTestFirst()
+{
+  // Set RPM
+  double init_rpm = 15.0;
+  std::map<uint8_t, uint16_t>::iterator it_dxl_array;
+  
+  for (uint8_t id = 1; id < 13; id++)
+  {
+    if (dxl_array_.find(id)->second == AX_12A)
+    {
+      writeValue(id, ADDR_AX_MOVING_SPEED, convertRpmToValue(AX_12A, init_rpm));
+    }
+    else if (dxl_array_.find(id)->second == XL430_W250)
+    {
+      writeValue(id, ADDR_XL_PROFILE_VELOCITY, convertRpmToValue(XL430_W250, init_rpm));
+    }
+    else
+    {
+      // error
+    }
+  }
+
+  Kinematics kinematics;
+  
+  float temp1_left_target_upper_joint = 0;
+  float temp1_left_target_lower_joint = 0;
+  float temp1_right_target_upper_joint = 0;
+  float temp1_right_target_lower_joint = 0;
+
+  kinematics.solveLegIK(7.425, 0, -129.7739);
+  temp1_left_target_upper_joint = (150 - kinematics.upper_leg_joint) / 0.2932f;
+  temp1_left_target_lower_joint = (150 - kinematics.lower_leg_joint) / 0.2932f;
+  temp1_right_target_upper_joint = (150 + kinematics.upper_leg_joint) / 0.2932f;
+  temp1_right_target_lower_joint = (150 + kinematics.lower_leg_joint) / 0.2932f;
+
+  std::vector<uint16_t> value;
+  value.clear();
+  value.push_back(temp1_left_target_upper_joint);
+  value.push_back(temp1_left_target_lower_joint);
+  value.push_back(temp1_right_target_upper_joint);
+  value.push_back(temp1_right_target_lower_joint);
+
+  // LEFT
+  for (uint8_t id = 1; id < 3; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 1));
+  }
+
+  for (uint8_t id = 5; id < 7; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 5));
+  }
+
+  // RIGHT
+  for (uint8_t id = 3; id < 5; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 1));
+  }
+
+  for (uint8_t id = 7; id < 9; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 5));
+  }
+}
+
+
+void FolexDynamixelDriver::gaitTestSecond()
+{
+  // Set RPM
+  double init_rpm = 15.0;
+  std::map<uint8_t, uint16_t>::iterator it_dxl_array;
+  
+  for (uint8_t id = 1; id < 13; id++)
+  {
+    if (dxl_array_.find(id)->second == AX_12A)
+    {
+      writeValue(id, ADDR_AX_MOVING_SPEED, convertRpmToValue(AX_12A, init_rpm));
+    }
+    else if (dxl_array_.find(id)->second == XL430_W250)
+    {
+      writeValue(id, ADDR_XL_PROFILE_VELOCITY, convertRpmToValue(XL430_W250, init_rpm));
+    }
+    else
+    {
+      // error
+    }
+  }
+
+  Kinematics kinematics;
+
+  float temp2_left_target_upper_joint = 0;
+  float temp2_left_target_lower_joint = 0;
+  float temp2_right_target_upper_joint = 0;
+  float temp2_right_target_lower_joint = 0;
+
+  kinematics.solveLegIK(9.5454, 0, -114.7918);
+  temp2_left_target_upper_joint = (150 - kinematics.upper_leg_joint) / 0.2932f;
+  temp2_left_target_lower_joint = (150 - kinematics.lower_leg_joint) / 0.2932f;
+  temp2_right_target_upper_joint = (150 + kinematics.upper_leg_joint) / 0.2932f;
+  temp2_right_target_lower_joint = (150 + kinematics.lower_leg_joint) / 0.2932f;
+
+  std::vector<uint16_t> value;
+  value.clear();
+  value.push_back(temp2_left_target_upper_joint);
+  value.push_back(temp2_left_target_lower_joint);
+  value.push_back(temp2_right_target_upper_joint);
+  value.push_back(temp2_right_target_lower_joint);
+
+  // LEFT
+  for (uint8_t id = 1; id < 3; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 1));
+  }
+
+  for (uint8_t id = 5; id < 7; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 5));
+  }
+
+  // RIGHT
+  for (uint8_t id = 3; id < 5; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 1));
+  }
+
+  for (uint8_t id = 7; id < 9; id++)
+  {
+    writeValue(id, ADDR_AX_GOAL_POSITION, value.at(id - 5));
+  }
+}
+
+void FolexDynamixelDriver::gaitTrot()
+{
+  // Set RPM
+  double init_rpm = 10.0;
+  std::map<uint8_t, uint16_t>::iterator it_dxl_array;
+  
+  for (uint8_t id = 1; id < 13; id++)
+  {
+    if (dxl_array_.find(id)->second == AX_12A)
+    {
+      writeValue(id, ADDR_AX_MOVING_SPEED, convertRpmToValue(AX_12A, init_rpm));
+    }
+    else if (dxl_array_.find(id)->second == XL430_W250)
+    {
+      writeValue(id, ADDR_XL_PROFILE_VELOCITY, convertRpmToValue(XL430_W250, init_rpm));
+    }
+    else
+    {
+      // error
+    }
+  }
+  
+  float temp1_left_target_upper_joint = 0;
+  float temp1_left_target_lower_joint = 0;
+  float temp1_right_target_upper_joint = 0;
+  float temp1_right_target_lower_joint = 0;
+  float temp2_left_target_upper_joint = 0;
+  float temp2_left_target_lower_joint = 0;
+  float temp2_right_target_upper_joint = 0;
+  float temp2_right_target_lower_joint = 0;
+
+  Kinematics kinematics;
+
+  kinematics.solveLegIK(7.425, 0, -129.7739);
+  temp1_left_target_upper_joint = (150 - kinematics.upper_leg_joint) / 0.2932f;
+  temp1_left_target_lower_joint = (150 - kinematics.lower_leg_joint) / 0.2932f;
+  temp1_right_target_upper_joint = (150 + kinematics.upper_leg_joint) / 0.2932f;
+  temp1_right_target_lower_joint = (150 + kinematics.lower_leg_joint) / 0.2932f;
+
+  kinematics.solveLegIK(9.5454, 0, -114.7918);
+  temp2_left_target_upper_joint = (150 - kinematics.upper_leg_joint) / 0.2932f;
+  temp2_left_target_lower_joint = (150 - kinematics.lower_leg_joint) / 0.2932f;
+  temp2_right_target_upper_joint = (150 + kinematics.upper_leg_joint) / 0.2932f;
+  temp2_right_target_lower_joint = (150 + kinematics.lower_leg_joint) / 0.2932f;
+
+  std::vector<uint16_t> value;
+  value.clear();
+  value.push_back(temp1_left_target_upper_joint);
+  value.push_back(temp1_left_target_lower_joint);
+  value.push_back(temp1_right_target_upper_joint);
+  value.push_back(temp1_right_target_lower_joint);
+  value.push_back(temp2_left_target_upper_joint);
+  value.push_back(temp2_left_target_lower_joint);
+  value.push_back(temp2_right_target_upper_joint);
+  value.push_back(temp2_right_target_lower_joint);
+
+  uint8_t dxl_index_one[4] = {1, 2, 7, 8};
+  uint8_t dxl_index_two[4] = {5, 6, 3, 4};
+
+  while (true)
+  {
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      writeValue(dxl_index_one[i], ADDR_AX_GOAL_POSITION, value.at(i));
+    }
+
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      writeValue(dxl_index_two[i], ADDR_AX_GOAL_POSITION, value.at(i + 4));
+    }
+
+    delay(1000);
+
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      writeValue(dxl_index_one[i], ADDR_AX_GOAL_POSITION, value.at(i + 4));
+    }
+
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      writeValue(dxl_index_two[i], ADDR_AX_GOAL_POSITION, value.at(i));
+    }
+
+    delay(1000);
+  }
 }

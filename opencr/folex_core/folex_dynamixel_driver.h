@@ -28,22 +28,22 @@
 #define ADDR_XL_PRESENT_POSITION  132
 
 /* DYNAMIXEL ID */
-// FRONT-LEFT
+// LEFT-FRONT
 #define JOINT_1                   1
 #define JOINT_2                   2
 #define JOINT_9                   9
 
-// FRONT-RIGHT
+// RIGHT-FRONT
 #define JOINT_3                   3
 #define JOINT_4                   4
 #define JOINT_10                  10
 
-// REAR-LEFT
+// LEFT-HIND
 #define JOINT_5                   5
 #define JOINT_6                   6
 #define JOINT_11                  11
 
-// REAR-RIGHT
+// RIGHT-HIND
 #define JOINT_7                   7
 #define JOINT_8                   8
 #define JOINT_12                  12
@@ -83,15 +83,23 @@ public:
   FolexDynamixelDriver();
   ~FolexDynamixelDriver();
   bool init();
-  void initPosition();
   void close();
   void addDynamixel(std::string name, std::string parent_name, std::string child_name);
   bool writeValue(uint8_t id, uint16_t address, uint32_t value);
   bool setTorque(uint8_t id, bool onoff);
   bool enableDynamixel();
   bool disableDynamixel();
+
+
+  void resetPosition();
+  
   uint16_t convertRpmToValue(uint16_t dxl_model, double rpm);
   //bool writePosition();
+
+  void test();
+  void gaitTestFirst();
+  void gaitTestSecond();
+  void gaitTrot();
 };
 
 #endif // FOLEX_DYNAMIXEL_DRIVER_H
