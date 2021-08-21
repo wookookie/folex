@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
 )
 
-
 catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS
@@ -23,29 +22,18 @@ catkin_package(
 ## Build ##
 ###########
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
+  include/folex_controller
 )
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME} src/folex_controller.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
+
 #############
 ## Install ##
 #############
-install(TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-## Mark cpp header files for installation
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
-
-install(DIRECTORY launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
 
 
 #############
