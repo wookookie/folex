@@ -22,11 +22,19 @@ FolexController::FolexController()
   present_joint_value_sub = nh.subscribe("opencr/joint_state", 10, &FolexController::callbackJointState, this);
 
   joint_states_pub = nh.advertise<sensor_msgs::JointState>("target_joint", 10); //?
-  
-  // Test joints
+
   joint_names.push_back("joint1");
   joint_names.push_back("joint2");
   joint_names.push_back("joint3");
+  joint_names.push_back("joint4");
+  joint_names.push_back("joint5");
+  joint_names.push_back("joint6");
+  joint_names.push_back("joint7");
+  joint_names.push_back("joint8");
+  joint_names.push_back("joint9");
+  joint_names.push_back("joint10");
+  joint_names.push_back("joint11");
+  joint_names.push_back("joint12");
 }
 
 FolexController::~FolexController()
