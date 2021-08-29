@@ -1,52 +1,65 @@
 //
 
-#include "folex_controller/folex_controller.hpp"
+#include "folex_controller.h"
 
 
-FolexController::FolexController(std::string usb_port, std::string baud_rate)
+FolexController::FolexController()
 {
+  present_joint_value_sub = nh.subscribe("opencr/joint_state", 10, &FolexController::callbackJointState, this);
 
+  joint_states_pub = nh.advertise<sensor_msgs::JointState>("target_joint", 10); //?
+  
+  joint_names.push_back("joint1");
+  joint_names.push_back("joint2");
+  joint_names.push_back("joint3");
 }
 
 FolexController::~FolexController()
-{
+{}
 
+void FolexController::publishJointStates(float joint_values[])
+{
+  joint_state_msg.header.stamp = ros::Time::now();
+  joint_state_msg.name.resize(joint_names.size());
+  joint_state_msg.position.resize(joint_names.size());
+
+  joint_state_msg.name = joint_names;
+
+  // Save the target joint value to JointState message
+  for (uint8_t i = 0; i < joint_names.size(); i++)
+  {
+    joint_state_msg.position[i] = joint_values[i];
+  }
+  
+  joint_states_pub.publish(joint_state_msg);
 }
 
-void chatterCallback(const std_msgs::String::ConstPtr& msg)
+void FolexController::callbackJointState(const sensor_msgs::JointState::ConstPtr &msg)
 {
-  ROS_INFO("HEY!! : ", msg->data.c_str());
-}
+  float pos[12];
 
+  for (uint8_t i = 0; i < 12; i++)
+  {
+    pos[i] = msg->position[i];
+    ROS_INFO("Receive joint value : %f", pos[i]);
+  }
+}
 
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "folex_controller");
-  ros::NodeHandle nh;
+  ROS_INFO("Folex Controller initialize complete.");
 
-  // Default settings for USB port and baud rate
-  std::string usb_port = "/dev/ttyACM0";
-  std::string baud_rate = "1000000";
+  FolexController folex_controller;
+  float joints[12] = {2048, 512, 512, 2048, 512, 512, 2048, 512, 512, 2048, 512, 512};
 
-  // If change USB port or baud rate
-  if (argc = 3)
+  while (ros::ok())
   {
-    usb_port = argv[1];
-    baud_rate = argv[2];
-    printf("USB port : %s\tBaud rate : %s\n", usb_port.c_str(), baud_rate.c_str());
+    folex_controller.publishJointStates(joints);
+
+    ros::spinOnce();
   }
-  else
-  {
-    printf("ERROR : USB port, Baud rate\n");
-    return 1;
-  }
-
-  FolexController controller(usb_port, baud_rate);
-
-  ros::Subscriber sub = nh.subscribe("chatter", 1000, chatterCallback);
-
-  ros::spin();
 
   return 0;  
 }

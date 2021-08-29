@@ -7,6 +7,7 @@ add_compile_options(-std=c++11)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
     roscpp
+    sensor_msgs
     std_msgs
 )
 
@@ -14,6 +15,7 @@ catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS
     roscpp
+    sensor_msgs
     std_msgs
   DEPENDS
 )
