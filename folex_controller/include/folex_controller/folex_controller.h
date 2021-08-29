@@ -27,7 +27,7 @@ public:
   FolexController();
   ~FolexController();
 
-  void publishJointStates(float target_joints[]);
+  void publishJointStates(float joint_value[], float joint_speed[]);
 
   void callbackJointState(const sensor_msgs::JointState::ConstPtr &msg);
 };
