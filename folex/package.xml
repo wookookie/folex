@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>folex</name>
-  <version>0.1.3</version>
+  <version>0.1.7</version>
   <description>
     The folex metapackage
   </description>
@@ -10,8 +10,8 @@
   <license>TODO</license>
 
   <!-- Author and Maintainer -->
-  <author email="danichoi737@gmail.com">Hyun-Wook Choi</author>
-  <maintainer email="danichoi737@gmail.com">Hyun-Wook Choi</maintainer>
+  <author email="danichoi737@gmail.com">Daniel Choi</author>
+  <maintainer email="danichoi737@gmail.com">Daniel Choi</maintainer>
 
   <!-- URL -->
   <url type="repository">https://github.com/danichoi737/folex.git</url>
