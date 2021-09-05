@@ -70,6 +70,22 @@ void FolexController::callbackJointState(const sensor_msgs::JointState::ConstPtr
   }
 }
 
+void FolexController::kinematicsTest()
+{
+  // float value_x = 8.7864;
+  // float value_y = 57.127;
+  // float value_z = -156.9551;
+
+  float value_x = -8.7864;
+  float value_y = 0;
+  float value_z = -167.0282;
+
+  std::cout << std::endl;
+  std::cout << "Value XYZ : " << value_x << "  " << value_y << "  " << value_z << std::endl;
+
+  kinematics.solveIK(value_x, value_y, value_z);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -82,6 +98,9 @@ int main(int argc, char** argv)
 
   ros::Rate loop_rate(1);
 
+  // TEST
+  folex_controller.kinematicsTest();
+
   while (ros::ok())
   {
     folex_controller.publishJointStates(joint_value, joint_speed);
@@ -90,5 +109,5 @@ int main(int argc, char** argv)
     loop_rate.sleep();
   }
 
-  return 0;  
+  return 0;
 }
