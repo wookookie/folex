@@ -45,8 +45,8 @@ namespace Folex
       Eigen::Matrix3f rotate_x;
       rotate_x <<
         1, 0, 0,
-        0, cosf(hip_angle), -sinf(hip_angle),
-        0, sinf(hip_angle), cosf(hip_angle);
+        0, cosf(-hip_angle), -sinf(-hip_angle),
+        0, sinf(-hip_angle), cosf(-hip_angle);
 
       // XYZ point vector
       Eigen::Vector3f point_vector;
@@ -69,12 +69,12 @@ namespace Folex
       std::cout << result_vector << std::endl;
 
       // Calculate the lower leg angle
-      float lower_leg_angle = acosf((pow(point_x, 2) + pow(point_z - upper_leg_offset, 2) - pow(upper_leg_length, 2) - pow(lower_leg_length, 2)) / (2 * upper_leg_length * lower_leg_length));
+      float lower_leg_angle = -1 * acosf((pow(point_x, 2) + pow(point_z - upper_leg_offset, 2) - pow(upper_leg_length, 2) - pow(lower_leg_length, 2)) / (2 * upper_leg_length * lower_leg_length));
 
       // Calculate the upper leg angle
       float alpha_angle = atan2(point_z - upper_leg_offset, point_x);
-      float beta_angle = -M_PI - atan2(lower_leg_length * sinf(lower_leg_angle), upper_leg_length + (lower_leg_length * cosf(lower_leg_angle)));
-      float upper_leg_angle = (M_PI / 2) + alpha_angle + beta_angle;
+      float beta_angle = atan2(lower_leg_length * sinf(-lower_leg_angle), upper_leg_length + (lower_leg_length * cosf(-lower_leg_angle)));
+      float upper_leg_angle = (M_PI / 2) - (alpha_angle - beta_angle);
 
       // DEBUG
       std::cout << std::endl;
