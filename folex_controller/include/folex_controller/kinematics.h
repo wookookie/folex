@@ -29,17 +29,32 @@ namespace Folex
   {
   private:
     // Leg dimensions
-    float upper_leg_offset = -22.5;    // 22.50 mm
-    float upper_leg_length = -67.5;    // 67.50 mm
-    float lower_leg_length = -82.35;   // 82.35 mm
+    static constexpr float upper_leg_offset = -22.5f;    // 22.50 mm
+    static constexpr float upper_leg_length = -67.5f;    // 67.50 mm
+    static constexpr float lower_leg_length = -82.35f;   // 82.35 mm
 
   public:
     Kinematics() {}
     ~Kinematics() {}
 
-    void solveIK(float point_x, float point_y, float point_z)
+    void solveIK(float (&joint_angle)[12], Eigen::Vector3f (&foot_position)[4])
     {
-      float hip_angle = (M_PI / 2) + atan2(point_z, point_y);
+      float calculated_angle[12];
+
+      for (uint8_t i = 0; i < 4; i++)
+      {
+        solveIK(calculated_angle[(i * 3)], calculated_angle[(i * 3) + 1], calculated_angle[(i * 3) + 2], foot_position[i]);
+      }
+
+      for (uint8_t i = 0; i < 12; i++)
+      {
+        joint_angle[i] = calculated_angle[i];
+      }
+    }
+
+    static void solveIK(float &hip_angle, float &upper_leg_angle, float &lower_leg_angle, Eigen::Vector3f &foot_position)
+    {
+      hip_angle = (M_PI / 2) + atan2(foot_position(2, 0), foot_position(1, 0));
 
       // Rotation matrix
       Eigen::Matrix3f rotate_x;
@@ -48,33 +63,21 @@ namespace Folex
         0, cosf(-hip_angle), -sinf(-hip_angle),
         0, sinf(-hip_angle), cosf(-hip_angle);
 
-      // XYZ point vector
-      Eigen::Vector3f point_vector;
-      point_vector <<
-        point_x,
-        point_y,
-        point_z;
-
       // Matrix multiplication
-      Eigen::Vector3f result_vector;
-      result_vector = rotate_x * point_vector;
-
-      // Save the calculated vector value to the point variable
-      point_x = result_vector(0);
-      point_y = result_vector(1);
-      point_z = result_vector(2);
+      Eigen::Vector3f rotated_position;
+      rotated_position = rotate_x * foot_position;
 
       // DEBUG
       std::cout << std::endl;
-      std::cout << result_vector << std::endl;
+      std::cout << rotated_position << std::endl;
 
       // Calculate the lower leg angle
-      float lower_leg_angle = -1 * acosf((pow(point_x, 2) + pow(point_z - upper_leg_offset, 2) - pow(upper_leg_length, 2) - pow(lower_leg_length, 2)) / (2 * upper_leg_length * lower_leg_length));
+      lower_leg_angle = -1 * acosf((pow(rotated_position(0, 0), 2) + pow(rotated_position(2, 0) - upper_leg_offset, 2) - pow(upper_leg_length, 2) - pow(lower_leg_length, 2)) / (2 * upper_leg_length * lower_leg_length));
 
       // Calculate the upper leg angle
-      float alpha_angle = atan2(point_z - upper_leg_offset, point_x);
+      float alpha_angle = atan2(rotated_position(2, 0) - upper_leg_offset, rotated_position(0, 0));
       float beta_angle = atan2(lower_leg_length * sinf(-lower_leg_angle), upper_leg_length + (lower_leg_length * cosf(-lower_leg_angle)));
-      float upper_leg_angle = (M_PI / 2) - (alpha_angle - beta_angle);
+      upper_leg_angle = (M_PI / 2) - (alpha_angle - beta_angle);
 
       // DEBUG
       std::cout << std::endl;

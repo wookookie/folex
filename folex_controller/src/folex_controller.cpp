@@ -72,14 +72,34 @@ void FolexController::callbackJointState(const sensor_msgs::JointState::ConstPtr
 
 void FolexController::kinematicsTest()
 {
-  float value_x = -8.7864;
-  float value_y = 57.127;
-  float value_z = -156.9551;
+  float joint_angle[12];
+
+  Eigen::Vector3f target_foot_position[4];
+
+  // TEST POSITIONS
+  target_foot_position[0](0, 0) = -8.7864;
+  target_foot_position[0](1, 0) = 57.127;
+  target_foot_position[0](2, 0) = -156.9551;
+
+  target_foot_position[1](0, 0) = -8.7864;
+  target_foot_position[1](1, 0) = -83.5141;
+  target_foot_position[1](2, 0) = -144.6506;
+
+  target_foot_position[2](0, 0) = 8.7864;
+  target_foot_position[2](1, 0) = 57.127;
+  target_foot_position[2](2, 0) = -156.9551;
+
+  target_foot_position[3](0, 0) = 7.425;
+  target_foot_position[3](1, 0) = 0;
+  target_foot_position[3](2, 0) = -152.2739;
 
   std::cout << std::endl;
-  std::cout << "Value XYZ : " << value_x << "  " << value_y << "  " << value_z << std::endl;
+  std::cout << "Value XYZ [LF] : " << target_foot_position[0](0, 0) << "  " << target_foot_position[0](1, 0) << "  " << target_foot_position[0](2, 0) << std::endl;
+  std::cout << "Value XYZ [RF] : " << target_foot_position[1](0, 0) << "  " << target_foot_position[1](1, 0) << "  " << target_foot_position[1](2, 0) << std::endl;
+  std::cout << "Value XYZ [LH] : " << target_foot_position[2](0, 0) << "  " << target_foot_position[2](1, 0) << "  " << target_foot_position[2](2, 0) << std::endl;
+  std::cout << "Value XYZ [RH] : " << target_foot_position[3](0, 0) << "  " << target_foot_position[3](1, 0) << "  " << target_foot_position[3](2, 0) << std::endl;
 
-  kinematics.solveIK(value_x, value_y, value_z);
+  kinematics.solveIK(joint_angle, target_foot_position);
 }
 
 
