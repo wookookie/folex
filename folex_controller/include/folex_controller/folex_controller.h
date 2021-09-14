@@ -48,7 +48,7 @@ public:
 
   void callbackJointState(const sensor_msgs::JointState::ConstPtr &msg);
 
-  void kinematicsTest();
+  void kinematicsTest(float (&joint)[12]);
 };
 
 # endif  // FOLEX_CONTROLLER_H

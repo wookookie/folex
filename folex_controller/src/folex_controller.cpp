@@ -70,24 +70,22 @@ void FolexController::callbackJointState(const sensor_msgs::JointState::ConstPtr
   }
 }
 
-void FolexController::kinematicsTest()
+void FolexController::kinematicsTest(float (&joint_angle)[12])
 {
-  float joint_angle[12];
-
   Eigen::Vector3f target_foot_position[4];
 
   // TEST POSITIONS
-  target_foot_position[0](0, 0) = -8.7864;
-  target_foot_position[0](1, 0) = 57.127;
-  target_foot_position[0](2, 0) = -156.9551;
+  target_foot_position[0](0, 0) = 7.425;
+  target_foot_position[0](1, 0) = 0.0;
+  target_foot_position[0](2, 0) = -152.2739;
 
-  target_foot_position[1](0, 0) = -8.7864;
-  target_foot_position[1](1, 0) = -83.5141;
-  target_foot_position[1](2, 0) = -144.6506;
+  target_foot_position[1](0, 0) = 7.425;
+  target_foot_position[1](1, 0) = 0.0;
+  target_foot_position[1](2, 0) = -152.2739;
 
-  target_foot_position[2](0, 0) = 8.7864;
-  target_foot_position[2](1, 0) = 57.127;
-  target_foot_position[2](2, 0) = -156.9551;
+  target_foot_position[2](0, 0) = 7.425;
+  target_foot_position[2](1, 0) = 0;
+  target_foot_position[2](2, 0) = -152.2739;
 
   target_foot_position[3](0, 0) = 7.425;
   target_foot_position[3](1, 0) = 0;
@@ -109,17 +107,17 @@ int main(int argc, char** argv)
   ROS_INFO("Folex Controller initialize complete.");
 
   FolexController folex_controller;
-  float joint_value[12] = {2048, 512, 512, 2048, 512, 512, 2048, 512, 512, 2048, 512, 512};
   float joint_speed[12] = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
 
   ros::Rate loop_rate(1);
 
   // TEST
-  folex_controller.kinematicsTest();
+  float joint_angle[12];
+  folex_controller.kinematicsTest(joint_angle);
 
   while (ros::ok())
   {
-    folex_controller.publishJointStates(joint_value, joint_speed);
+    folex_controller.publishJointStates(joint_angle, joint_speed);
 
     ros::spinOnce();
     loop_rate.sleep();
