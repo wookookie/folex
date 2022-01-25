@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>folex</name>
-  <version>0.1.14</version>
+  <version>0.2.0</version>
   <description>
-    The folex metapackage
+    FOLEX metapackage
   </description>
 
   <!-- License -->
   <license>Apache 2.0 License</license>
 
   <!-- Author and Maintainer -->
-  <author email="danichoi737@gmail.com">Daniel Choi</author>
-  <maintainer email="danichoi737@gmail.com">Daniel Choi</maintainer>
+  <author email="danichoi737@gmail.com">Hyunwook Choi</author>
+  <maintainer email="danichoi737@gmail.com">Hyunwook Choi</maintainer>
 
   <!-- URL -->
   <url type="repository">https://github.com/danichoi737/folex.git</url>

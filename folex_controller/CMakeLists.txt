@@ -11,33 +11,24 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
 )
 
+## catkin specific configuration
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS
+    include
   CATKIN_DEPENDS
     roscpp
+    # Message
     sensor_msgs
     std_msgs
   DEPENDS
 )
 
-###########
-## Build ##
-###########
+## Specify additional locations of header files
 include_directories(
   ${catkin_INCLUDE_DIRS}
   include/folex_controller
 )
 
 ## Declare a C++ executable
-add_executable(${PROJECT_NAME} src/folex_controller.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
-
-
-#############
-## Install ##
-#############
-
-
-#############
-## Testing ##
-#############
+add_executable(folex_controller src/folex_controller.cpp)
+target_link_libraries(folex_controller ${catkin_LIBRARIES})
