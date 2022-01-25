@@ -22,11 +22,19 @@ FolexController::FolexController()
   present_joint_value_sub = nh.subscribe("opencr/joint_state", 10, &FolexController::callbackJointState, this);
 
   joint_states_pub = nh.advertise<sensor_msgs::JointState>("target_joint", 10); //?
-  
-  // Test joints
+
   joint_names.push_back("joint1");
   joint_names.push_back("joint2");
   joint_names.push_back("joint3");
+  joint_names.push_back("joint4");
+  joint_names.push_back("joint5");
+  joint_names.push_back("joint6");
+  joint_names.push_back("joint7");
+  joint_names.push_back("joint8");
+  joint_names.push_back("joint9");
+  joint_names.push_back("joint10");
+  joint_names.push_back("joint11");
+  joint_names.push_back("joint12");
 }
 
 FolexController::~FolexController()
@@ -62,6 +70,36 @@ void FolexController::callbackJointState(const sensor_msgs::JointState::ConstPtr
   }
 }
 
+void FolexController::kinematicsTest(float (&joint_angle)[12])
+{
+  Eigen::Vector3f target_foot_position[4];
+
+  // TEST POSITIONS
+  target_foot_position[0](0, 0) = 7.425;
+  target_foot_position[0](1, 0) = 0.0;
+  target_foot_position[0](2, 0) = -152.2739;
+
+  target_foot_position[1](0, 0) = 7.425;
+  target_foot_position[1](1, 0) = 0.0;
+  target_foot_position[1](2, 0) = -152.2739;
+
+  target_foot_position[2](0, 0) = 7.425;
+  target_foot_position[2](1, 0) = 0;
+  target_foot_position[2](2, 0) = -152.2739;
+
+  target_foot_position[3](0, 0) = 7.425;
+  target_foot_position[3](1, 0) = 0;
+  target_foot_position[3](2, 0) = -152.2739;
+
+  std::cout << std::endl;
+  std::cout << "Value XYZ [LF] : " << target_foot_position[0](0, 0) << "  " << target_foot_position[0](1, 0) << "  " << target_foot_position[0](2, 0) << std::endl;
+  std::cout << "Value XYZ [RF] : " << target_foot_position[1](0, 0) << "  " << target_foot_position[1](1, 0) << "  " << target_foot_position[1](2, 0) << std::endl;
+  std::cout << "Value XYZ [LH] : " << target_foot_position[2](0, 0) << "  " << target_foot_position[2](1, 0) << "  " << target_foot_position[2](2, 0) << std::endl;
+  std::cout << "Value XYZ [RH] : " << target_foot_position[3](0, 0) << "  " << target_foot_position[3](1, 0) << "  " << target_foot_position[3](2, 0) << std::endl;
+
+  kinematics.solveIK(joint_angle, target_foot_position);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -69,18 +107,21 @@ int main(int argc, char** argv)
   ROS_INFO("Folex Controller initialize complete.");
 
   FolexController folex_controller;
-  float joint_value[12] = {2048, 512, 512, 2048, 512, 512, 2048, 512, 512, 2048, 512, 512};
   float joint_speed[12] = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
 
   ros::Rate loop_rate(1);
 
+  // TEST
+  float joint_angle[12];
+  folex_controller.kinematicsTest(joint_angle);
+
   while (ros::ok())
   {
-    folex_controller.publishJointStates(joint_value, joint_speed);
+    folex_controller.publishJointStates(joint_angle, joint_speed);
 
     ros::spinOnce();
     loop_rate.sleep();
   }
 
-  return 0;  
+  return 0;
 }

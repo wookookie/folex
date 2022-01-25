@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>folex_controller</name>
-  <version>0.1.5</version>
+  <version>0.1.10</version>
   <description>
     The folex_controller package
   </description>
 
   <!-- License -->
-  <license>TODO: License declaration</license>
+  <license>Apache 2.0 License</license>
 
   <!-- Author and Maintainer-->
   <author email="danichoi737@gmail.com">Daniel Choi</author>

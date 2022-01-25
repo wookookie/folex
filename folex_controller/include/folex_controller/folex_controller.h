@@ -22,6 +22,7 @@
 #include <sensor_msgs/JointState.h>
 #include <std_msgs/String.h>
 
+#include "kinematics.h"
 
 
 class FolexController
@@ -36,6 +37,8 @@ private:
 
   std::vector<std::string> joint_names;
 
+  Folex::Kinematics kinematics;
+
 
 public:
   FolexController();
@@ -44,6 +47,8 @@ public:
   void publishJointStates(float joint_value[], float joint_speed[]);
 
   void callbackJointState(const sensor_msgs::JointState::ConstPtr &msg);
+
+  void kinematicsTest(float (&joint)[12]);
 };
 
 # endif  // FOLEX_CONTROLLER_H
