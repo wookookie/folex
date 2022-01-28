@@ -20,6 +20,7 @@
   <!-- Dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
+  <depend>dynamixel_sdk</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
 
