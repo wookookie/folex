@@ -1,0 +1,2 @@
+# FOLEX U2D2 USB SERIAL PORT RULES
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT3WHQFJ", SYMLINK+="U2D2", MODE:="0666", ATTR{device/latency_timer}="1"
