@@ -96,6 +96,8 @@ public:
   void initActuator();
 
   void setDataMap();
+  void setReturnDelayTime(uint8_t delay);
+
   uint16_t getDataAddressAX(uint16_t address);
   uint16_t getDataAddressXL(uint16_t address);
 

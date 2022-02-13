@@ -38,6 +38,7 @@ void Actuator::initActuator()
     ROS_INFO_STREAM("[ACTUATOR] Set baud rate: " << kBaudrate);
 
     setDataMap();
+    setReturnDelayTime(0);
   }
   else
   {
@@ -68,6 +69,11 @@ void Actuator::setDataMap()
   // XL address - Data type
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.TORQUE_ENABLE, DataType::BYTE));
+}
+
+void Actuator::setReturnDelayTime(uint8_t delay)
+{
+  writeData(JointNumber::JOINT_ALL, DataAddress::RETURN_DELAY_TIME, delay);
 }
 
 uint16_t Actuator::getDataAddressAX(uint16_t address)
