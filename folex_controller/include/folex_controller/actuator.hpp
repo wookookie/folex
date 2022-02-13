@@ -45,6 +45,12 @@ enum DataAddress
   TORQUE_ENABLE
 };
 
+enum DataPreset
+{
+  TORQUE_OFF = 0,
+  TORQUE_ON = 1
+};
+
 class DynamixelAX
 {
 public:
@@ -94,6 +100,8 @@ public:
   ~Actuator();
 
   void initActuator();
+  void enableActuator(uint8_t id);
+  void disableActuator(uint8_t id);
 
   void setDataMap();
   void setReturnDelayTime(uint8_t delay);

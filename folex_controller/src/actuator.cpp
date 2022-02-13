@@ -46,6 +46,52 @@ void Actuator::initActuator()
   }
 }
 
+void Actuator::enableActuator(uint8_t id)
+{
+  if (id == JointNumber::JOINT_ALL)
+  {
+    writeDataALL(DataAddress::TORQUE_ENABLE, DataPreset::TORQUE_ON);
+  }
+  else if (id > 0)
+  {
+    if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(id, getDataAddressAX(DataAddress::TORQUE_ENABLE), DataPreset::TORQUE_ON);
+    }
+    else if (joints_.find(id)->second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(id, getDataAddressXL(DataAddress::TORQUE_ENABLE), DataPreset::TORQUE_ON);
+    }
+  }
+  else
+  {
+    // error
+  }
+}
+
+void Actuator::disableActuator(uint8_t id)
+{
+  if (id == JointNumber::JOINT_ALL)
+  {
+    writeDataALL(DataAddress::TORQUE_ENABLE, DataPreset::TORQUE_OFF);
+  }
+  else if (id > 0)
+  {
+    if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(id, getDataAddressAX(DataAddress::TORQUE_ENABLE), DataPreset::TORQUE_OFF);
+    }
+    else if (joints_.find(id)->second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(id, getDataAddressXL(DataAddress::TORQUE_ENABLE), DataPreset::TORQUE_OFF);
+    }
+  }
+  else
+  {
+    // error
+  }
+}
+
 void Actuator::setDataMap()
 {
   // Joint number - Dynamixel model
@@ -201,6 +247,7 @@ int main(int argc, char **argv)
 
   Actuator actuator;
   actuator.initActuator();
+  actuator.enableActuator(JointNumber::JOINT_ALL);
 
   while (ros::ok())
   {
