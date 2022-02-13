@@ -98,6 +98,11 @@ public:
   void setDataMap();
   uint16_t getDataAddressAX(uint16_t address);
   uint16_t getDataAddressXL(uint16_t address);
+
+  void writeData(uint8_t id, uint16_t address, uint32_t data);
+  void writeDataALL(uint16_t address, uint32_t data);
+  void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
+  void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
 };
 
 # endif  // ACTUATOR_HPP

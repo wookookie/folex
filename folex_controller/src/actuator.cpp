@@ -110,6 +110,84 @@ uint16_t Actuator::getDataAddressXL(uint16_t address)
   return 0;
 }
 
+void Actuator::writeData(uint8_t id, uint16_t address, uint32_t data)
+{
+  if (id == JointNumber::JOINT_ALL)
+  {
+    writeDataALL(address, data);
+  }
+  else if (id > 0)
+  {
+    if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(id, getDataAddressAX(address), data);
+    }
+    else if (joints_.find(id)->second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(id, getDataAddressXL(address), data);
+    }
+  }
+  else
+  {
+    // error
+  }
+}
+
+void Actuator::writeDataALL(uint16_t address, uint32_t data)
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(p.first, getDataAddressAX(address), data);
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(p.first, getDataAddressXL(address), data);
+    }
+    else
+    {
+      // error
+    }
+  }
+}
+
+void Actuator::writeDataAX(uint8_t id, uint16_t address, uint32_t data)
+{
+  if (dxl_ax_.address_map_.find(address)->second == DataType::BYTE)
+  {
+    packet_handler_->write1ByteTxRx(port_handler_, id, address, data, &dxl_ax_.error_);
+  }
+  else if (dxl_ax_.address_map_.find(address)->second == DataType::WORD)
+  {
+    packet_handler_->write2ByteTxRx(port_handler_, id, address, data, &dxl_ax_.error_);
+  }
+  else
+  {
+    // error
+  }
+}
+
+void Actuator::writeDataXL(uint8_t id, uint16_t address, uint32_t data)
+{
+  if (dxl_xl_.address_map_.find(address)->second == DataType::BYTE)
+  {
+    packet_handler_->write1ByteTxRx(port_handler_, id, address, data, &dxl_xl_.error_);
+  }
+  else if (dxl_xl_.address_map_.find(address)->second == DataType::WORD)
+  {
+    packet_handler_->write2ByteTxRx(port_handler_, id, address, data, &dxl_xl_.error_);
+  }
+  else if (dxl_xl_.address_map_.find(address)->second == DataType::DWORD)
+  {
+    packet_handler_->write4ByteTxRx(port_handler_, id, address, data, &dxl_xl_.error_);
+  }
+  else
+  {
+    // error
+  }
+}
+
 
 int main(int argc, char **argv)
 {
