@@ -36,11 +36,78 @@ void Actuator::initActuator()
 
     port_handler_->setBaudRate(kBaudrate);
     ROS_INFO_STREAM("[ACTUATOR] Set baud rate: " << kBaudrate);
+
+    setDataMap();
   }
   else
   {
     ROS_ERROR_STREAM("[ACTUATOR] Port open failed.");
   }
+}
+
+void Actuator::setDataMap()
+{
+  // Joint number - Dynamixel model
+  joints_.insert(std::make_pair(JointNumber::JOINT_1, dxl_xl_.Address::XL430_W250));
+  joints_.insert(std::make_pair(JointNumber::JOINT_2, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_3, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_4, dxl_xl_.Address::XL430_W250));
+  joints_.insert(std::make_pair(JointNumber::JOINT_5, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_6, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_7, dxl_xl_.Address::XL430_W250));
+  joints_.insert(std::make_pair(JointNumber::JOINT_8, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_9, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_10, dxl_xl_.Address::XL430_W250));
+  joints_.insert(std::make_pair(JointNumber::JOINT_11, dxl_ax_.Address::AX_12A));
+  joints_.insert(std::make_pair(JointNumber::JOINT_12, dxl_ax_.Address::AX_12A));
+
+  // AX address - Data type
+  dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.RETURN_DELAY_TIME, DataType::BYTE));
+  dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.TORQUE_ENABLE, DataType::BYTE));
+
+  // XL address - Data type
+  dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.RETURN_DELAY_TIME, DataType::BYTE));
+  dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.TORQUE_ENABLE, DataType::BYTE));
+}
+
+uint16_t Actuator::getDataAddressAX(uint16_t address)
+{
+  switch (address)
+  {
+    case DataAddress::RETURN_DELAY_TIME:
+      return dxl_ax_.Address::RETURN_DELAY_TIME;
+      break;
+
+    case DataAddress::TORQUE_ENABLE:
+      return dxl_ax_.Address::TORQUE_ENABLE;
+      break;
+
+    default:
+      // error
+      break;
+  }
+
+  return 0;
+}
+
+uint16_t Actuator::getDataAddressXL(uint16_t address)
+{
+  switch (address)
+  {
+    case DataAddress::RETURN_DELAY_TIME:
+      return dxl_xl_.Address::RETURN_DELAY_TIME;
+      break;
+
+    case DataAddress::TORQUE_ENABLE:
+      return dxl_xl_.Address::TORQUE_ENABLE;
+      break;
+
+    default:
+      // error
+      break;
+  }
+
+  return 0;
 }
 
 
