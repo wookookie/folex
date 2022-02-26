@@ -17,10 +17,10 @@
 #ifndef ACTUATOR_HPP
 #define ACTUATOR_HPP
 
-#include <dynamixel_sdk/dynamixel_sdk.h>
 #include <iostream>
 #include <map>
-#include <ros/ros.h>
+
+#include <dynamixel_sdk/dynamixel_sdk.h>
 
 
 enum JointNumber
@@ -80,9 +80,6 @@ public:
 class Actuator
 {
 private:
-  // ROS
-  ros::NodeHandle nh_;
-
   // Dynamixel
   const char *kPortName = "/dev/U2D2";
   const float kProtocolVer = 1.0F;

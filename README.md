@@ -2,22 +2,22 @@
 Four-Legged Experimental Robot
 
 ## REQUIREMENTS
-* Ubuntu 20.04
-* ROS Noetic
+* Ubuntu 18.04
+* CMake 3.15
 
-## CLONE AND BUILD PACKAGE
+## CLONE AND BUILD
 ```
-$ cd ~/catkin_ws/src
+$ cd <your-dev-directory>
 $ git clone https://github.com/danichoi737/folex.git
-$ git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git
-$ cd ..
-$ catkin_make
+$ cd folex
+$ mkdir build && cd build
+$ cmake ..
+$ cmake --build .
 ```
 
 ## ADD USB RULES
 ```
-$ cd ~/catkin_ws/src/folex/folex_controller/scripts
+$ cd scripts
 $ chmod +x create_udev_rules
-$ roscore
-$ rosrun folex_controller create_udev_rules
+$ ./create_udev_rules
 ```

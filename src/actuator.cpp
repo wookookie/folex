@@ -32,17 +32,17 @@ void Actuator::initActuator()
 
   if (port_handler_->openPort() == true)
   {
-    ROS_INFO_STREAM("[ACTUATOR] Port opened: " << kPortName);
+    std::cout << "[ACTUATOR] Port opened: " << kPortName << std::endl;
 
     port_handler_->setBaudRate(kBaudrate);
-    ROS_INFO_STREAM("[ACTUATOR] Set baud rate: " << kBaudrate);
+    std::cout << "[ACTUATOR] Set baud rate: " << kBaudrate << std::endl;
 
     setDataMap();
     setReturnDelayTime(0);
   }
   else
   {
-    ROS_ERROR_STREAM("[ACTUATOR] Port open failed.");
+    std::cout << "[ACTUATOR] Port open failed." << std::endl;
   }
 }
 
@@ -238,21 +238,4 @@ void Actuator::writeDataXL(uint8_t id, uint16_t address, uint32_t data)
   {
     // error
   }
-}
-
-
-int main(int argc, char **argv)
-{
-  ros::init(argc, argv, "actuator");
-
-  Actuator actuator;
-  actuator.initActuator();
-  actuator.enableActuator(JointNumber::JOINT_ALL);
-
-  while (ros::ok())
-  {
-    ros::spinOnce();
-  }
-  
-  return 0;
 }
