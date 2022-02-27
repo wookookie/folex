@@ -111,10 +111,12 @@ void Actuator::setDataMap()
   // AX address - Data type
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.TORQUE_ENABLE, DataType::BYTE));
+  dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.PRESENT_POSITION, DataType::WORD));
 
   // XL address - Data type
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.TORQUE_ENABLE, DataType::BYTE));
+  dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.PRESENT_POSITION, DataType::DWORD));
 }
 
 void Actuator::setReturnDelayTime(uint8_t delay)
@@ -132,6 +134,10 @@ uint16_t Actuator::getDataAddressAX(uint16_t address)
 
     case DataAddress::TORQUE_ENABLE:
       return dxl_ax_.Address::TORQUE_ENABLE;
+      break;
+
+    case DataAddress::PRESENT_ANGLE:
+      return dxl_ax_.Address::PRESENT_POSITION;
       break;
 
     default:
@@ -154,12 +160,76 @@ uint16_t Actuator::getDataAddressXL(uint16_t address)
       return dxl_xl_.Address::TORQUE_ENABLE;
       break;
 
+    case DataAddress::PRESENT_ANGLE:
+      return dxl_xl_.Address::PRESENT_POSITION;
+      break;
+
     default:
       // error
       break;
   }
 
   return 0;
+}
+
+void Actuator::readDataAX(uint8_t id, uint16_t address, uint32_t *data)
+{
+  if (dxl_ax_.address_map_.find(address)->second == DataType::BYTE)
+  {
+    packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint8_, &dxl_ax_.error_);
+    data[id] = dxl_ax_.buffer_uint8_;
+  }
+  else if (dxl_ax_.address_map_.find(address)->second == DataType::WORD)
+  {
+    packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint16_, &dxl_ax_.error_);
+    data[id] = dxl_ax_.buffer_uint16_;
+  }
+  else
+  {
+    // error
+  }
+}
+
+void Actuator::readDataXL(uint8_t id, uint16_t address, uint32_t *data)
+{
+  if (dxl_xl_.address_map_.find(address)->second == DataType::BYTE)
+  {
+    packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint8_, &dxl_xl_.error_);
+    data[id] = dxl_xl_.buffer_uint8_;
+  }
+  else if (dxl_xl_.address_map_.find(address)->second == DataType::WORD)
+  {
+    packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint16_, &dxl_xl_.error_);
+    data[id] = dxl_xl_.buffer_uint16_;
+  }
+  else if (dxl_xl_.address_map_.find(address)->second == DataType::DWORD)
+  {
+    packet_handler_->read4ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint32_, &dxl_xl_.error_);
+    data[id] = dxl_xl_.buffer_uint32_;
+  }
+  else
+  {
+    // error
+  }
+}
+
+void Actuator::readPresentAngle()
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      readDataAX(p.first, getDataAddressAX(PRESENT_ANGLE), present_angle_);
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      readDataXL(p.first, getDataAddressXL(PRESENT_ANGLE), present_angle_);
+    }
+    else
+    {
+      // error
+    }
+  }
 }
 
 void Actuator::writeData(uint8_t id, uint16_t address, uint32_t data)

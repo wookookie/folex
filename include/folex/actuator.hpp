@@ -42,7 +42,8 @@ enum DataType
 enum DataAddress
 {
   RETURN_DELAY_TIME,
-  TORQUE_ENABLE
+  TORQUE_ENABLE,
+  PRESENT_ANGLE
 };
 
 enum DataPreset
@@ -58,10 +59,15 @@ public:
   {
     AX_12A = 12,
     RETURN_DELAY_TIME = 5,
-    TORQUE_ENABLE = 24
+    TORQUE_ENABLE = 24,
+    PRESENT_POSITION = 36
   };
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
+
+  // Data buffer
+  uint8_t buffer_uint8_;
+  uint16_t buffer_uint16_;
 };
 
 class DynamixelXL
@@ -71,10 +77,16 @@ public:
   {
     XL430_W250 = 1060,
     RETURN_DELAY_TIME = 9,
-    TORQUE_ENABLE = 64
+    TORQUE_ENABLE = 64,
+    PRESENT_POSITION = 132
   };
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
+
+  // Data buffer
+  uint8_t buffer_uint8_;
+  uint16_t buffer_uint16_;
+  uint32_t buffer_uint32_;
 };
 
 class Actuator
@@ -86,13 +98,18 @@ private:
   const uint32_t kBaudrate = 1000000;
   dynamixel::PortHandler *port_handler_;
   dynamixel::PacketHandler *packet_handler_;
-  DynamixelAX dxl_ax_;
-  DynamixelXL dxl_xl_;
 
   // Joint
   std::map<uint8_t, uint16_t> joints_;
 
+  // Data
+  uint32_t present_angle_[12];
+
 public:
+  // Dynamixel
+  DynamixelAX dxl_ax_;
+  DynamixelXL dxl_xl_;
+
   Actuator();
   ~Actuator();
 
@@ -105,6 +122,10 @@ public:
 
   uint16_t getDataAddressAX(uint16_t address);
   uint16_t getDataAddressXL(uint16_t address);
+
+  void readDataAX(uint8_t id, uint16_t address, uint32_t *data);
+  void readDataXL(uint8_t id, uint16_t address, uint32_t *data);
+  void readPresentAngle();
 
   void writeData(uint8_t id, uint16_t address, uint32_t data);
   void writeDataALL(uint16_t address, uint32_t data);

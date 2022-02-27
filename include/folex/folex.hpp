@@ -14,4 +14,16 @@
 * limitations under the License.
 ******************************************************************************/
 
+#include <iostream>
+
+#include <pthread.h>
+
 #include "actuator.hpp"
+
+
+// Thread
+pthread_t actuator_value_;
+
+Actuator actuator;
+
+void *threadActuatorValue(void *arg);

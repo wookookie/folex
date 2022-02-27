@@ -17,12 +17,22 @@
 #include "folex.hpp"
 
 
+void *threadActuatorValue(void *arg)
+{
+  while (true)
+  {
+    actuator.readPresentAngle();
+  }
+}
+
+
 int main()
 {
-  Actuator actuator;
-
   actuator.initActuator();
   actuator.enableActuator(0);
+
+  pthread_create(&actuator_value_, NULL, threadActuatorValue, NULL);
+  pthread_join(actuator_value_, NULL);
 
   return 0;
 }
