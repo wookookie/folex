@@ -20,6 +20,8 @@
 #include <time.h>
 
 #include "actuator.hpp"
+#include "kinematics.hpp"
+
 
 /* Actuator */
 Actuator actuator;
@@ -27,5 +29,11 @@ Actuator actuator;
 pthread_t actuator_value_;
 // Thread loop rate
 struct timespec read_rate = {.tv_sec = 0, .tv_nsec = 1000000};
+
+// Kinematics
+Kinematics kinematics;
+// Target value
+float joint_angle[12];
+Eigen::Vector3f target_foot_position[4];
 
 void *threadActuatorValue(void *arg);
