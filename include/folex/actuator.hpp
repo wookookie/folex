@@ -17,6 +17,7 @@
 #ifndef ACTUATOR_HPP
 #define ACTUATOR_HPP
 
+#include <cmath>
 #include <iostream>
 #include <map>
 
@@ -67,6 +68,12 @@ public:
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
 
+  // Angle
+  float kDegToRad = M_PI / 180.0F;
+  float kLimitAngle = 300.0F * kDegToRad;
+  float kHomeAngle = 150.0F * kDegToRad;
+  float kRadPerValue = kLimitAngle / 1023.0F;
+
   // Data buffer
   uint8_t buffer_uint8_;
   uint16_t buffer_uint16_;
@@ -85,6 +92,12 @@ public:
   };
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
+
+  // Angle
+  float kDegToRad = M_PI / 180.0F;
+  float kLimitAngle = 360.0F * kDegToRad;
+  float kHomeAngle = 180.0F * kDegToRad;
+  float kRadPerValue = kLimitAngle / 4095.0F;
 
   // Data buffer
   uint8_t buffer_uint8_;
@@ -136,6 +149,8 @@ public:
   void writeDataALL(uint16_t address, uint32_t data);
   void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
+
+  void convertRadianToValue(float (&angle)[12]);
 };
 
 # endif  // ACTUATOR_HPP
