@@ -10,7 +10,10 @@ add_executable(folex
 
 target_link_libraries(folex
   pthread
-  /usr/local/lib/libdxl_sbc_cpp.so
+  # x86-64
+  /usr/local/lib/libdxl_x64_cpp.so
+  # ARM
+  #/usr/local/lib/libdxl_sbc_cpp.so
 )
 
 target_include_directories(folex
