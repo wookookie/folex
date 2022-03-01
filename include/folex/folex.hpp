@@ -17,13 +17,15 @@
 #include <iostream>
 
 #include <pthread.h>
+#include <time.h>
 
 #include "actuator.hpp"
 
-
+/* Actuator */
+Actuator actuator;
 // Thread
 pthread_t actuator_value_;
-
-Actuator actuator;
+// Thread loop rate
+struct timespec read_rate = {.tv_sec = 0, .tv_nsec = 1000000};
 
 void *threadActuatorValue(void *arg);

@@ -22,6 +22,8 @@ void *threadActuatorValue(void *arg)
   while (true)
   {
     actuator.readPresentAngle();
+    actuator.readPresentVelocity();
+    nanosleep(&read_rate, NULL);
   }
 }
 
