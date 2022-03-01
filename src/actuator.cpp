@@ -112,10 +112,12 @@ void Actuator::setDataMap()
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.TORQUE_ENABLE, DataType::BYTE));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.PRESENT_POSITION, DataType::WORD));
+  dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.PRESENT_SPEED, DataType::WORD));
 
   // XL address - Data type
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.TORQUE_ENABLE, DataType::BYTE));
+  dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.PRESENT_VELOCITY, DataType::DWORD));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.PRESENT_POSITION, DataType::DWORD));
 }
 
@@ -140,6 +142,10 @@ uint16_t Actuator::getDataAddressAX(uint16_t address)
       return dxl_ax_.Address::PRESENT_POSITION;
       break;
 
+    case DataAddress::PRESENT_VELOCITY:
+      return dxl_ax_.Address::PRESENT_SPEED;
+      break;
+
     default:
       // error
       break;
@@ -162,6 +168,10 @@ uint16_t Actuator::getDataAddressXL(uint16_t address)
 
     case DataAddress::PRESENT_ANGLE:
       return dxl_xl_.Address::PRESENT_POSITION;
+      break;
+
+    case DataAddress::PRESENT_VELOCITY:
+      return dxl_xl_.Address::PRESENT_VELOCITY;
       break;
 
     default:
@@ -224,6 +234,25 @@ void Actuator::readPresentAngle()
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       readDataXL(p.first, getDataAddressXL(PRESENT_ANGLE), present_angle_);
+    }
+    else
+    {
+      // error
+    }
+  }
+}
+
+void Actuator::readPresentVelocity()
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      readDataAX(p.first, getDataAddressAX(PRESENT_VELOCITY), present_velocity_);
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      readDataXL(p.first, getDataAddressXL(PRESENT_VELOCITY), present_velocity_);
     }
     else
     {
