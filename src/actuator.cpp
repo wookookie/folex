@@ -347,22 +347,55 @@ void Actuator::convertRadianToValue(float (&angle)[12])
     {
       if (p.first == JOINT_5 || p.first == JOINT_6 || p.first == JOINT_11 || p.first == JOINT_12)
       {
-        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_ax_.kHomeAngle) / dxl_ax_.kRadPerValue;
+        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] + dxl_ax_.kHomeAngle) / dxl_ax_.kRadPerValue;
+        angle[p.first - 1] = (angle[p.first - 1] + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       if (p.first == JOINT_7 || p.first == JOINT_10)
       {
-        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_xl_.kHomeAngle) / dxl_xl_.kRadPerValue;
+        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] + dxl_xl_.kHomeAngle) / dxl_xl_.kRadPerValue;
+        angle[p.first - 1] = (angle[p.first - 1] + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
+      }
+    }
+    else
+    {
+      // error
+    }
+  }
+}
+
+void Actuator::convertValueToRadian(uint32_t (&angle)[12])
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      if (p.first == JOINT_5 || p.first == JOINT_6 || p.first == JOINT_11 || p.first == JOINT_12)
+      {
+        angle[p.first - 1] = -1.0F * ((angle[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian);
+      }
+      else
+      {
+        angle[p.first - 1] = (angle[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian;
+      }
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      if (p.first == JOINT_7 || p.first == JOINT_10)
+      {
+        angle[p.first - 1] = -1.0F * ((angle[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian);
+      }
+      else
+      {
+        angle[p.first - 1] = (angle[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian;
       }
     }
     else

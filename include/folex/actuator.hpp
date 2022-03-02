@@ -69,10 +69,13 @@ public:
   uint8_t error_;
 
   // Angle
-  float kDegToRad = M_PI / 180.0F;
-  float kLimitAngle = 300.0F * kDegToRad;
-  float kHomeAngle = 150.0F * kDegToRad;
-  float kRadPerValue = kLimitAngle / 1023.0F;
+  static constexpr float kDegreeToRadian = M_PI / 180.0F;
+  static constexpr float kLimitAngleRadian = 300.0F * kDegreeToRadian;
+  static constexpr float kLimitAngleValue = 1023.0F;
+  static constexpr float kHomeAngleRadian = kLimitAngleRadian / 2;
+  static constexpr float kHomeAngleValue = kLimitAngleValue / 2;
+  static constexpr float kRadianPerValue = kLimitAngleRadian / kLimitAngleValue;
+  static constexpr float kValuePerRadian = kLimitAngleValue / kLimitAngleRadian;
 
   // Data buffer
   uint8_t buffer_uint8_;
@@ -94,10 +97,12 @@ public:
   uint8_t error_;
 
   // Angle
-  float kDegToRad = M_PI / 180.0F;
-  float kLimitAngle = 360.0F * kDegToRad;
-  float kHomeAngle = 180.0F * kDegToRad;
-  float kRadPerValue = kLimitAngle / 4095.0F;
+  static constexpr float kLimitAngleRadian = 2 * M_PI;
+  static constexpr float kLimitAngleValue = 4095.0F;
+  static constexpr float kHomeAngleRadian = kLimitAngleRadian / 2;
+  static constexpr float kHomeAngleValue = kLimitAngleValue / 2;
+  static constexpr float kRadianPerValue = kLimitAngleRadian / kLimitAngleValue;
+  static constexpr float kValuePerRadian = kLimitAngleValue / kLimitAngleRadian;
 
   // Data buffer
   uint8_t buffer_uint8_;
@@ -151,6 +156,7 @@ public:
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
 
   void convertRadianToValue(float (&angle)[12]);
+  void convertValueToRadian(uint32_t (&angle)[12]);
 };
 
 # endif  // ACTUATOR_HPP
