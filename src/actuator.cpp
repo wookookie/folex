@@ -187,12 +187,12 @@ void Actuator::readDataAX(uint8_t id, uint16_t address, uint32_t *data)
   if (dxl_ax_.address_map_.find(address)->second == DataType::BYTE)
   {
     packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint8_, &dxl_ax_.error_);
-    data[id] = dxl_ax_.buffer_uint8_;
+    data[id - 1] = dxl_ax_.buffer_uint8_;
   }
   else if (dxl_ax_.address_map_.find(address)->second == DataType::WORD)
   {
     packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint16_, &dxl_ax_.error_);
-    data[id] = dxl_ax_.buffer_uint16_;
+    data[id - 1] = dxl_ax_.buffer_uint16_;
   }
   else
   {
@@ -205,17 +205,17 @@ void Actuator::readDataXL(uint8_t id, uint16_t address, uint32_t *data)
   if (dxl_xl_.address_map_.find(address)->second == DataType::BYTE)
   {
     packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint8_, &dxl_xl_.error_);
-    data[id] = dxl_xl_.buffer_uint8_;
+    data[id - 1] = dxl_xl_.buffer_uint8_;
   }
   else if (dxl_xl_.address_map_.find(address)->second == DataType::WORD)
   {
     packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint16_, &dxl_xl_.error_);
-    data[id] = dxl_xl_.buffer_uint16_;
+    data[id - 1] = dxl_xl_.buffer_uint16_;
   }
   else if (dxl_xl_.address_map_.find(address)->second == DataType::DWORD)
   {
     packet_handler_->read4ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint32_, &dxl_xl_.error_);
-    data[id] = dxl_xl_.buffer_uint32_;
+    data[id - 1] = dxl_xl_.buffer_uint32_;
   }
   else
   {
