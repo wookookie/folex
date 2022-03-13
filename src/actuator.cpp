@@ -339,7 +339,7 @@ void Actuator::writeDataXL(uint8_t id, uint16_t address, uint32_t data)
   }
 }
 
-void Actuator::convertRadianToValue(float (&angle)[12])
+void Actuator::convertRadianToValue(float (&radian)[12], uint32_t (&value)[12])
 {
   for (auto p : joints_)
   {
@@ -347,22 +347,22 @@ void Actuator::convertRadianToValue(float (&angle)[12])
     {
       if (p.first == JOINT_5 || p.first == JOINT_6 || p.first == JOINT_11 || p.first == JOINT_12)
       {
-        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
+        value[p.first - 1] = ((-1.0F * radian[p.first - 1]) + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
+        value[p.first - 1] = (radian[p.first - 1] + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       if (p.first == JOINT_7 || p.first == JOINT_10)
       {
-        angle[p.first - 1] = ((-1.0F * angle[p.first - 1]) + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
+        value[p.first - 1] = ((-1.0F * radian[p.first - 1]) + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
+        value[p.first - 1] = (radian[p.first - 1] + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
       }
     }
     else
@@ -372,7 +372,7 @@ void Actuator::convertRadianToValue(float (&angle)[12])
   }
 }
 
-void Actuator::convertValueToRadian(uint32_t (&angle)[12])
+void Actuator::convertValueToRadian(uint32_t (&value)[12], float (&radian)[12])
 {
   for (auto p : joints_)
   {
@@ -380,22 +380,22 @@ void Actuator::convertValueToRadian(uint32_t (&angle)[12])
     {
       if (p.first == JOINT_5 || p.first == JOINT_6 || p.first == JOINT_11 || p.first == JOINT_12)
       {
-        angle[p.first - 1] = -1.0F * ((angle[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian);
+        radian[p.first - 1] = -1.0F * ((value[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian);
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian;
+        radian[p.first - 1] = (value[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian;
       }
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       if (p.first == JOINT_7 || p.first == JOINT_10)
       {
-        angle[p.first - 1] = -1.0F * ((angle[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian);
+        radian[p.first - 1] = -1.0F * ((value[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian);
       }
       else
       {
-        angle[p.first - 1] = (angle[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian;
+        radian[p.first - 1] = (value[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian;
       }
     }
     else

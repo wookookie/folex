@@ -155,8 +155,8 @@ public:
   void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
 
-  void convertRadianToValue(float (&angle)[12]);
-  void convertValueToRadian(uint32_t (&angle)[12]);
+  void convertRadianToValue(float (&radian)[12], uint32_t (&value)[12]);
+  void convertValueToRadian(uint32_t (&value)[12], float (&radian)[12]);
 };
 
 # endif  // ACTUATOR_HPP
