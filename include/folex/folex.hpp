@@ -15,13 +15,22 @@
 ******************************************************************************/
 
 #include <iostream>
-
 #include <pthread.h>
 #include <time.h>
 
 #include "actuator.hpp"
+#include "essential.hpp"
 #include "kinematics.hpp"
 
+// Declare the static variables
+float Joint::present_angle[12];
+float Joint::present_velocity[12];
+float Joint::target_angle[12];
+float Joint::target_velocity[12];
+uint32_t Joint::present_angle_value[12];
+uint32_t Joint::present_velocity_value[12];
+uint32_t Joint::target_angle_value[12];
+uint32_t Joint::target_velocity_value[12];
 
 /* Actuator */
 Actuator actuator;

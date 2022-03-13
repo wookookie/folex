@@ -20,18 +20,10 @@
 #include <cmath>
 #include <iostream>
 #include <map>
-
 #include <dynamixel_sdk/dynamixel_sdk.h>
 
+#include "essential.hpp"
 
-enum JointNumber
-{
-  JOINT_ALL,
-  JOINT_1, JOINT_2, JOINT_3,
-  JOINT_4, JOINT_5, JOINT_6,
-  JOINT_7, JOINT_8, JOINT_9,
-  JOINT_10, JOINT_11, JOINT_12
-};
 
 enum DataType
 {
@@ -122,10 +114,6 @@ private:
 
   // Joint
   std::map<uint8_t, uint16_t> joints_;
-
-  // Data
-  uint32_t present_angle_[12];
-  uint32_t present_velocity_[12];
 
 public:
   // Dynamixel

@@ -19,22 +19,14 @@
 
 #include <cmath>
 #include <iostream>
-
-#if __INTELLISENSE__
-#undef __ARM_NEON
-#undef __ARM_NEON__
-#endif
 #include <eigen3/Eigen/Eigen>
+
+#include "essential.hpp"
 
 
 class Kinematics
 {
 private:
-  // Leg dimensions
-  static constexpr float kUpperLegOffset = -22.5F;    // 22.50 mm
-  static constexpr float kUpperLegLength = -67.5F;    // 67.50 mm
-  static constexpr float kLowerLegLength = -82.35F;   // 82.35 mm
-
   // Rotation matrix
   Eigen::Matrix3f rotate_x_;
   Eigen::Vector3f rotated_position_;
@@ -79,8 +71,8 @@ public:
     }
 
     // Calculate the lower leg angle
-    lower_leg_angle = -1 * acosf((pow(rotated_position_(0, 0), 2) + pow(rotated_position_(2, 0) - kUpperLegOffset, 2) - pow(kUpperLegLength, 2) - pow(kLowerLegLength, 2))
-                                / (2 * kUpperLegLength * kLowerLegLength));
+    lower_leg_angle = -1 * acosf((pow(rotated_position_(0, 0), 2) + pow(rotated_position_(2, 0) - Leg::upper_leg_offset, 2) - pow(Leg::upper_leg_length, 2) - pow(Leg::lower_leg_length, 2))
+                                / (2 * Leg::upper_leg_length * Leg::lower_leg_length));
     if (std::isnan(lower_leg_angle))
     {
       // No more proceed calculation
@@ -88,8 +80,8 @@ public:
     }
 
     // Calculate the upper leg angle
-    alpha_angle = atan2(rotated_position_(2, 0) - kUpperLegOffset, rotated_position_(0, 0));
-    beta_angle = atan2(kLowerLegLength * sinf(-lower_leg_angle), kUpperLegLength + (kLowerLegLength * cosf(-lower_leg_angle)));
+    alpha_angle = atan2(rotated_position_(2, 0) - Leg::upper_leg_offset, rotated_position_(0, 0));
+    beta_angle = atan2(Leg::lower_leg_length * sinf(-lower_leg_angle), Leg::upper_leg_length + (Leg::lower_leg_length * cosf(-lower_leg_angle)));
     upper_leg_angle = (M_PI / 2) - (alpha_angle - beta_angle);
   }
 };
