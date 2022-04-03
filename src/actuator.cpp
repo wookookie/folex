@@ -111,12 +111,14 @@ void Actuator::setDataMap()
   // AX address - Data type
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.TORQUE_ENABLE, DataType::BYTE));
+  dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.MOVING_SPEED, DataType::WORD));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.PRESENT_POSITION, DataType::WORD));
   dxl_ax_.address_map_.insert(std::make_pair(dxl_ax_.PRESENT_SPEED, DataType::WORD));
 
   // XL address - Data type
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.RETURN_DELAY_TIME, DataType::BYTE));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.TORQUE_ENABLE, DataType::BYTE));
+  dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.GOAL_VELOCITY, DataType::DWORD));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.PRESENT_VELOCITY, DataType::DWORD));
   dxl_xl_.address_map_.insert(std::make_pair(dxl_xl_.PRESENT_POSITION, DataType::DWORD));
 }
@@ -146,6 +148,10 @@ uint16_t Actuator::getDataAddressAX(uint16_t address)
       return dxl_ax_.Address::PRESENT_SPEED;
       break;
 
+    case DataAddress::TARGET_VELOCITY:
+      return dxl_ax_.Address::MOVING_SPEED;
+      break;
+
     default:
       // error
       break;
@@ -172,6 +178,10 @@ uint16_t Actuator::getDataAddressXL(uint16_t address)
 
     case DataAddress::PRESENT_VELOCITY:
       return dxl_xl_.Address::PRESENT_VELOCITY;
+      break;
+
+    case DataAddress::TARGET_VELOCITY:
+      return dxl_xl_.Address::GOAL_VELOCITY;
       break;
 
     default:
@@ -336,6 +346,25 @@ void Actuator::writeDataXL(uint8_t id, uint16_t address, uint32_t data)
   else
   {
     // error
+  }
+}
+
+void Actuator::writeTargetVelocity()
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(p.first, getDataAddressAX(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first - 1]);
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(p.first, getDataAddressXL(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first - 1]);
+    }
+    else
+    {
+      // error
+    }
   }
 }
 

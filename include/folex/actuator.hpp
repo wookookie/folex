@@ -37,7 +37,8 @@ enum DataAddress
   RETURN_DELAY_TIME,
   TORQUE_ENABLE,
   PRESENT_ANGLE,
-  PRESENT_VELOCITY
+  PRESENT_VELOCITY,
+  TARGET_VELOCITY
 };
 
 enum DataPreset
@@ -54,6 +55,7 @@ public:
     AX_12A = 12,
     RETURN_DELAY_TIME = 5,
     TORQUE_ENABLE = 24,
+    MOVING_SPEED = 32,
     PRESENT_POSITION = 36,
     PRESENT_SPEED = 38
   };
@@ -82,6 +84,7 @@ public:
     XL430_W250 = 1060,
     RETURN_DELAY_TIME = 9,
     TORQUE_ENABLE = 64,
+    GOAL_VELOCITY = 104,
     PRESENT_VELOCITY = 128,
     PRESENT_POSITION = 132
   };
@@ -142,6 +145,7 @@ public:
   void writeDataALL(uint16_t address, uint32_t data);
   void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
+  void writeTargetVelocity();
 
   void convertRadianToValue(float (&radian)[12], uint32_t (&value)[12]);
   void convertValueToRadian(uint32_t (&value)[12], float (&radian)[12]);

@@ -35,9 +35,7 @@ uint32_t Joint::target_velocity_value[12];
 /* Actuator */
 Actuator actuator;
 // Thread
-pthread_t actuator_value_;
-// Thread loop rate
-struct timespec read_rate = {.tv_sec = 0, .tv_nsec = 1000000};
+pthread_t th_actuator_value;
 
 // Kinematics
 Kinematics kinematics;

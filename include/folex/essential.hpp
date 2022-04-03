@@ -20,6 +20,12 @@
 #include <iostream>
 
 
+// Sleep time
+static struct timespec ts_msec_1 = {.tv_sec = 0, .tv_nsec = 1000000};
+static struct timespec ts_msec_10 = {.tv_sec = 0, .tv_nsec = 10000000};
+static struct timespec ts_msec_100 = {.tv_sec = 0, .tv_nsec = 100000000};
+static struct timespec ts_sec_1 = {.tv_sec = 1, .tv_nsec = 0};
+
 class Joint
 {
 public:

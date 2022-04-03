@@ -23,7 +23,9 @@ void *threadActuatorValue(void *arg)
   {
     actuator.readPresentAngle();
     actuator.readPresentVelocity();
-    nanosleep(&read_rate, NULL);
+    actuator.writeTargetVelocity();
+
+    nanosleep(&ts_msec_10, NULL);
   }
 }
 
@@ -33,8 +35,8 @@ int main()
   actuator.initActuator();
   actuator.enableActuator(0);
 
-  pthread_create(&actuator_value_, NULL, threadActuatorValue, NULL);
-  pthread_join(actuator_value_, NULL);
+  pthread_create(&th_actuator_value, NULL, threadActuatorValue, NULL);
+  pthread_join(th_actuator_value, NULL);
 
   return 0;
 }
