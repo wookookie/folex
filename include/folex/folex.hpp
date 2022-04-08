@@ -21,6 +21,7 @@
 #include "actuator.hpp"
 #include "essential.hpp"
 #include "kinematics.hpp"
+#include "trajectory.hpp"
 
 // Declare the static variables
 float Joint::present_angle[12];
@@ -43,4 +44,17 @@ Kinematics kinematics;
 float joint_angle[12];
 Eigen::Vector3f target_foot_position[4];
 
+/* Trajectory */
+JointTrajectory trajectory;
+// Thread
+pthread_t th_trajectory;
+// Trajectory generation indicator
+bool trajectory_gen;
+
+/* Print values */
+pthread_t th_print;
+
+
 void *threadActuatorValue(void *arg);
+void *threadPrintValue(void *arg);
+void *threadTrajectory(void *arg);
