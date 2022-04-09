@@ -147,8 +147,8 @@ public:
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
   void writeTargetVelocity();
 
-  void convertRadianToValue(float (&radian)[12], uint32_t (&value)[12]);
-  void convertValueToRadian(uint32_t (&value)[12], float (&radian)[12]);
+  void convertRadianToValue(float (&radian)[Joint::JOINT_ALL], uint32_t (&value)[Joint::JOINT_ALL]);
+  void convertValueToRadian(uint32_t (&value)[Joint::JOINT_ALL], float (&radian)[Joint::JOINT_ALL]);
 };
 
 # endif  // ACTUATOR_HPP

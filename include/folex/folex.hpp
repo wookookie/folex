@@ -24,14 +24,14 @@
 #include "trajectory.hpp"
 
 // Declare the static variables
-float Joint::present_angle[12];
-float Joint::present_velocity[12];
-float Joint::target_angle[12];
-float Joint::target_velocity[12];
-uint32_t Joint::present_angle_value[12];
-uint32_t Joint::present_velocity_value[12];
-uint32_t Joint::target_angle_value[12];
-uint32_t Joint::target_velocity_value[12];
+float Joint::present_angle[Joint::JOINT_ALL];
+float Joint::present_velocity[Joint::JOINT_ALL];
+float Joint::target_angle[Joint::JOINT_ALL];
+float Joint::target_velocity[Joint::JOINT_ALL];
+uint32_t Joint::present_angle_value[Joint::JOINT_ALL];
+uint32_t Joint::present_velocity_value[Joint::JOINT_ALL];
+uint32_t Joint::target_angle_value[Joint::JOINT_ALL];
+uint32_t Joint::target_velocity_value[Joint::JOINT_ALL];
 
 /* Actuator */
 Actuator actuator;
@@ -41,7 +41,7 @@ pthread_t th_actuator_value;
 // Kinematics
 Kinematics kinematics;
 // Target value
-float joint_angle[12];
+float joint_angle[Joint::JOINT_ALL];
 Eigen::Vector3f target_foot_position[4];
 
 /* Trajectory */

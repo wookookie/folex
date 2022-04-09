@@ -23,7 +23,7 @@ void *threadActuatorValue(void *arg)
   float _target_vel = 0;
   uint16_t kLimitVelocity = 250;
   uint16_t waypoint_index = 0;
-  uint8_t kTestJointNum = 5;   // JOINT 6
+  uint8_t kTestJointNum = Joint::JointNumber::JOINT_6;
 
   while (true)
   {
@@ -75,7 +75,7 @@ void *threadPrintValue(void *arg)
   {
     // Count
     std::cout << "COUNT: " << _count << "\t";
-    for (uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
     {
       std::cout << Joint::present_angle_value[i] << "\t";
     }
@@ -83,7 +83,7 @@ void *threadPrintValue(void *arg)
     std::cout << "\t";
 
     // Present velocity
-    for (uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
     {
       if (Joint::present_velocity_value[i] > 1023)
       {
@@ -99,7 +99,7 @@ void *threadPrintValue(void *arg)
     std::cout << "\t";
 
     // Target velocity
-    for (uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
     {
       if (Joint::target_velocity_value[i] > 1023)
       {
@@ -113,7 +113,7 @@ void *threadPrintValue(void *arg)
     }
 
     // Target position
-    // for (uint8_t i = 0; i < 12; i++)
+    // for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
     // {
     //   std::cout << Joint::target_angle_value[i] << "\t";
     // }
@@ -140,13 +140,13 @@ void *threadTrajectory(void *arg)
     {
       if (reverse == true)
       {
-        start_point.position = Joint::present_angle_value[5];
+        start_point.position = Joint::present_angle_value[Joint::JOINT_6];
         end_point.position = 512;
         reverse = false;
       }
       else
       {
-        start_point.position = Joint::present_angle_value[5];
+        start_point.position = Joint::present_angle_value[Joint::JOINT_6];
         end_point.position = 700;
         reverse = true;
       }

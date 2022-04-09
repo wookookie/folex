@@ -31,24 +31,24 @@ class Joint
 public:
   enum JointNumber
   {
-    JOINT_ALL,
     JOINT_1, JOINT_2, JOINT_3,
     JOINT_4, JOINT_5, JOINT_6,
     JOINT_7, JOINT_8, JOINT_9,
-    JOINT_10, JOINT_11, JOINT_12
+    JOINT_10, JOINT_11, JOINT_12,
+    JOINT_ALL,
   };
 
   /* Angle */
   // Radian
-  static float present_angle[12];
-  static float present_velocity[12];
-  static float target_angle[12];
-  static float target_velocity[12];
+  static float present_angle[JOINT_ALL];
+  static float present_velocity[JOINT_ALL];
+  static float target_angle[JOINT_ALL];
+  static float target_velocity[JOINT_ALL];
   // Dynamixel value
-  static uint32_t present_angle_value[12];
-  static uint32_t present_velocity_value[12];
-  static uint32_t target_angle_value[12];
-  static uint32_t target_velocity_value[12];
+  static uint32_t present_angle_value[JOINT_ALL];
+  static uint32_t present_velocity_value[JOINT_ALL];
+  static uint32_t target_angle_value[JOINT_ALL];
+  static uint32_t target_velocity_value[JOINT_ALL];
 };
 
 class Leg

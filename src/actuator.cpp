@@ -52,7 +52,7 @@ void Actuator::enableActuator(uint8_t id)
   {
     writeDataALL(DataAddress::TORQUE_ENABLE, DataPreset::TORQUE_ON);
   }
-  else if (id > 0)
+  else if (id < Joint::JOINT_ALL)
   {
     if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
     {
@@ -75,7 +75,7 @@ void Actuator::disableActuator(uint8_t id)
   {
     writeDataALL(DataAddress::TORQUE_ENABLE, DataPreset::TORQUE_OFF);
   }
-  else if (id > 0)
+  else if (id < Joint::JOINT_ALL)
   {
     if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
     {
@@ -197,12 +197,12 @@ void Actuator::readDataAX(uint8_t id, uint16_t address, uint32_t *data)
   if (dxl_ax_.address_map_.find(address)->second == DataType::BYTE)
   {
     packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint8_, &dxl_ax_.error_);
-    data[id - 1] = dxl_ax_.buffer_uint8_;
+    data[id] = dxl_ax_.buffer_uint8_;
   }
   else if (dxl_ax_.address_map_.find(address)->second == DataType::WORD)
   {
     packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_ax_.buffer_uint16_, &dxl_ax_.error_);
-    data[id - 1] = dxl_ax_.buffer_uint16_;
+    data[id] = dxl_ax_.buffer_uint16_;
   }
   else
   {
@@ -215,17 +215,17 @@ void Actuator::readDataXL(uint8_t id, uint16_t address, uint32_t *data)
   if (dxl_xl_.address_map_.find(address)->second == DataType::BYTE)
   {
     packet_handler_->read1ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint8_, &dxl_xl_.error_);
-    data[id - 1] = dxl_xl_.buffer_uint8_;
+    data[id] = dxl_xl_.buffer_uint8_;
   }
   else if (dxl_xl_.address_map_.find(address)->second == DataType::WORD)
   {
     packet_handler_->read2ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint16_, &dxl_xl_.error_);
-    data[id - 1] = dxl_xl_.buffer_uint16_;
+    data[id] = dxl_xl_.buffer_uint16_;
   }
   else if (dxl_xl_.address_map_.find(address)->second == DataType::DWORD)
   {
     packet_handler_->read4ByteTxRx(port_handler_, id, address, &dxl_xl_.buffer_uint32_, &dxl_xl_.error_);
-    data[id - 1] = dxl_xl_.buffer_uint32_;
+    data[id] = dxl_xl_.buffer_uint32_;
   }
   else
   {
@@ -277,7 +277,7 @@ void Actuator::writeData(uint8_t id, uint16_t address, uint32_t data)
   {
     writeDataALL(address, data);
   }
-  else if (id > 0)
+  else if (id < Joint::JOINT_ALL)
   {
     if (joints_.find(id)->second == dxl_ax_.Address::AX_12A)
     {
@@ -355,11 +355,11 @@ void Actuator::writeTargetVelocity()
   {
     if (p.second == dxl_ax_.Address::AX_12A)
     {
-      writeDataAX(p.first, getDataAddressAX(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first - 1]);
+      writeDataAX(p.first, getDataAddressAX(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first]);
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
-      writeDataXL(p.first, getDataAddressXL(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first - 1]);
+      writeDataXL(p.first, getDataAddressXL(DataAddress::TARGET_VELOCITY), Joint::target_velocity_value[p.first]);
     }
     else
     {
@@ -376,22 +376,22 @@ void Actuator::convertRadianToValue(float (&radian)[12], uint32_t (&value)[12])
     {
       if (p.first == Joint::JOINT_5 || p.first == Joint::JOINT_6 || p.first == Joint::JOINT_11 || p.first == Joint::JOINT_12)
       {
-        value[p.first - 1] = ((-1.0F * radian[p.first - 1]) + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
+        value[p.first] = ((-1.0F * radian[p.first]) + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
       else
       {
-        value[p.first - 1] = (radian[p.first - 1] + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
+        value[p.first] = (radian[p.first] + dxl_ax_.kHomeAngleRadian) / dxl_ax_.kRadianPerValue;
       }
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       if (p.first == Joint::JOINT_7 || p.first == Joint::JOINT_10)
       {
-        value[p.first - 1] = ((-1.0F * radian[p.first - 1]) + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
+        value[p.first] = ((-1.0F * radian[p.first]) + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
       }
       else
       {
-        value[p.first - 1] = (radian[p.first - 1] + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
+        value[p.first] = (radian[p.first] + dxl_xl_.kHomeAngleRadian) / dxl_xl_.kRadianPerValue;
       }
     }
     else
@@ -409,22 +409,22 @@ void Actuator::convertValueToRadian(uint32_t (&value)[12], float (&radian)[12])
     {
       if (p.first == Joint::JOINT_5 || p.first == Joint::JOINT_6 || p.first == Joint::JOINT_11 || p.first == Joint::JOINT_12)
       {
-        radian[p.first - 1] = -1.0F * ((value[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian);
+        radian[p.first] = -1.0F * ((value[p.first] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian);
       }
       else
       {
-        radian[p.first - 1] = (value[p.first - 1] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian;
+        radian[p.first] = (value[p.first] - dxl_ax_.kHomeAngleValue) / dxl_ax_.kValuePerRadian;
       }
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
       if (p.first == Joint::JOINT_7 || p.first == Joint::JOINT_10)
       {
-        radian[p.first - 1] = -1.0F * ((value[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian);
+        radian[p.first] = -1.0F * ((value[p.first] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian);
       }
       else
       {
-        radian[p.first - 1] = (value[p.first - 1] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian;
+        radian[p.first] = (value[p.first] - dxl_xl_.kHomeAngleValue) / dxl_xl_.kValuePerRadian;
       }
     }
     else

@@ -39,13 +39,13 @@ private:
   float alpha_angle;
   float beta_angle;
   // Result angle
-  float calculated_angle_[12];
+  float calculated_angle_[Joint::JOINT_ALL];
 
 public:
   Kinematics() {}
   ~Kinematics() {}
 
-  void solveIK(float (&joint_angle)[12], Eigen::Vector3f (&foot_position)[4])
+  void solveIK(float (&joint_angle)[Joint::JOINT_ALL], Eigen::Vector3f (&foot_position)[4])
   {
     for (uint8_t i = 0; i < 4; i++)
     {
