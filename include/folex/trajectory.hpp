@@ -30,14 +30,6 @@
 #include "essential.hpp"
 
 
-class Waypoint
-{
-public:
-  float position;
-  float velocity;
-  float acceleration;
-};
-
 class JointTrajectory
 {
 private:
@@ -49,11 +41,9 @@ private:
   void calculateWaypoint(float tick);
 
 public:
-  std::vector<Waypoint> joint_waypoint;
-
   JointTrajectory();
   ~JointTrajectory();
   void generateTrajectory(Waypoint start, Waypoint end, float time);
 };
 
-#endif // TRAJECTORY_HPP
+#endif  // TRAJECTORY_HPP

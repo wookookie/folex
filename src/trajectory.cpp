@@ -66,7 +66,7 @@ void JointTrajectory::calculateWaypoint(float tick)
     2  * coefficient(3);
 
   // Save waypoint
-  joint_waypoint.push_back(waypoint);
+  Joint::joint_waypoint.push_back(waypoint);
 }
 
 void JointTrajectory::generateTrajectory(Waypoint start, Waypoint end, float time)

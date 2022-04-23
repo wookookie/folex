@@ -26,6 +26,14 @@ static struct timespec ts_msec_10 = {.tv_sec = 0, .tv_nsec = 10000000};
 static struct timespec ts_msec_100 = {.tv_sec = 0, .tv_nsec = 100000000};
 static struct timespec ts_sec_1 = {.tv_sec = 1, .tv_nsec = 0};
 
+class Waypoint
+{
+public:
+  float position;
+  float velocity;
+  float acceleration;
+};
+
 class Joint
 {
 public:
@@ -49,6 +57,10 @@ public:
   static uint32_t present_velocity_value[JOINT_ALL];
   static uint32_t target_angle_value[JOINT_ALL];
   static uint32_t target_velocity_value[JOINT_ALL];
+
+  /* Trajectory */
+  static bool trajectory_gen;
+  static std::vector<Waypoint> joint_waypoint;
 };
 
 class Leg
@@ -60,4 +72,4 @@ public:
   static constexpr float lower_leg_length = -82.35F;   // 82.35 mm
 };
 
-#endif // ESSENTIAL_HPP
+#endif  // ESSENTIAL_HPP

@@ -32,29 +32,23 @@ uint32_t Joint::present_angle_value[Joint::JOINT_ALL];
 uint32_t Joint::present_velocity_value[Joint::JOINT_ALL];
 uint32_t Joint::target_angle_value[Joint::JOINT_ALL];
 uint32_t Joint::target_velocity_value[Joint::JOINT_ALL];
-
-/* Actuator */
-Actuator actuator;
-// Thread
-pthread_t th_actuator_value;
-
-// Kinematics
-Kinematics kinematics;
-// Target value
-float joint_angle[Joint::JOINT_ALL];
-Eigen::Vector3f target_foot_position[4];
-
-/* Trajectory */
-JointTrajectory trajectory;
-// Thread
-pthread_t th_trajectory;
-// Trajectory generation indicator
-bool trajectory_gen;
-
-/* Print values */
-pthread_t th_print;
+bool Joint::trajectory_gen = false;
+std::vector<Waypoint> Joint::joint_waypoint;
 
 
-void *threadActuatorValue(void *arg);
-void *threadPrintValue(void *arg);
-void *threadTrajectory(void *arg);
+class Folex
+{
+private:
+  pthread_t th_actuator_value_;
+  pthread_t th_trajectory_;
+  pthread_t th_print_;
+
+public:
+  Folex();
+  ~Folex();
+  void threadCreate();
+  void threadJoin();
+  static void *threadActuatorValue(void *arg);
+  static void *threadPrintValue(void *arg);
+  static void *threadTrajectory(void *arg);
+};
