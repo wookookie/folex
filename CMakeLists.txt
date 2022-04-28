@@ -3,7 +3,7 @@ project(folex)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(folex
+add_executable(folex src/main.cpp
   src/actuator.cpp
   src/folex.cpp
   src/trajectory.cpp

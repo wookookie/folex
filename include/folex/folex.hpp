@@ -14,6 +14,9 @@
 * limitations under the License.
 ******************************************************************************/
 
+#ifndef FOLEX_HPP
+#define FOLEX_HPP
+
 #include <iostream>
 #include <pthread.h>
 #include <time.h>
@@ -23,32 +26,40 @@
 #include "kinematics.hpp"
 #include "trajectory.hpp"
 
-// Declare the static variables
-float Joint::present_angle[Joint::JOINT_ALL];
-float Joint::present_velocity[Joint::JOINT_ALL];
-float Joint::target_angle[Joint::JOINT_ALL];
-float Joint::target_velocity[Joint::JOINT_ALL];
-uint32_t Joint::present_angle_value[Joint::JOINT_ALL];
-uint32_t Joint::present_velocity_value[Joint::JOINT_ALL];
-uint32_t Joint::target_angle_value[Joint::JOINT_ALL];
-uint32_t Joint::target_velocity_value[Joint::JOINT_ALL];
-bool Joint::trajectory_gen = false;
-std::vector<Waypoint> Joint::joint_waypoint;
 
-
-class Folex
+class FolexTask
 {
-private:
+protected:
   pthread_t th_actuator_value_;
   pthread_t th_trajectory_;
   pthread_t th_print_;
 
 public:
-  Folex();
-  ~Folex();
+  FolexTask();
+  virtual ~FolexTask();
+
+  virtual void actuator() = 0;
+  virtual void print() = 0;
+  virtual void trajectory() = 0;
+
   void threadCreate();
   void threadJoin();
   static void *threadActuatorValue(void *arg);
   static void *threadPrintValue(void *arg);
   static void *threadTrajectory(void *arg);
 };
+
+class Folex : public FolexTask
+{
+private:
+
+public:
+  Folex();
+  ~Folex();
+
+  void actuator();
+  void print();
+  void trajectory();
+};
+
+#endif  // FOLEX_HPP

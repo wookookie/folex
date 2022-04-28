@@ -17,13 +17,52 @@
 #include "folex.hpp"
 
 
+FolexTask::FolexTask()
+{}
+
+FolexTask::~FolexTask()
+{}
+
+void FolexTask::threadCreate()
+{
+  pthread_create(&th_actuator_value_, NULL, &FolexTask::threadActuatorValue, this);
+  pthread_create(&th_print_, NULL, &FolexTask::threadPrintValue, this);
+  pthread_create(&th_trajectory_, NULL, &FolexTask::threadTrajectory, this);
+}
+
+void FolexTask::threadJoin()
+{
+  pthread_join(th_actuator_value_, NULL);
+  pthread_join(th_print_, NULL);
+  pthread_join(th_trajectory_, NULL);
+}
+
+void *FolexTask::threadActuatorValue(void *arg)
+{
+  ((FolexTask *)arg)->actuator();
+  return NULL;
+}
+
+void *FolexTask::threadPrintValue(void *arg)
+{
+  ((FolexTask *)arg)->print();
+  return NULL;
+}
+
+void *FolexTask::threadTrajectory(void *arg)
+{
+  ((FolexTask *)arg)->trajectory();
+  return NULL;
+}
+
+
 Folex::Folex()
 {}
 
 Folex::~Folex()
 {}
 
-void *Folex::threadActuatorValue(void *arg)
+void Folex::actuator()
 {
   Actuator *p_actuator = new Actuator();
 
@@ -79,7 +118,7 @@ void *Folex::threadActuatorValue(void *arg)
   }
 }
 
-void *Folex::threadPrintValue(void *arg)
+void Folex::print()
 {
   uint32_t _count = 1;
   while (true)
@@ -136,7 +175,7 @@ void *Folex::threadPrintValue(void *arg)
   }
 }
 
-void *Folex::threadTrajectory(void *arg)
+void Folex::trajectory()
 {
   JointTrajectory *p_trajectory = new JointTrajectory();
 
@@ -170,28 +209,4 @@ void *Folex::threadTrajectory(void *arg)
 
     nanosleep(&ts_msec_10, NULL);
   }
-}
-
-void Folex::threadCreate()
-{
-  pthread_create(&th_actuator_value_, NULL, threadActuatorValue, NULL);
-  pthread_create(&th_trajectory_, NULL, threadTrajectory, NULL);
-  pthread_create(&th_print_, NULL, threadPrintValue, NULL);
-}
-
-void Folex::threadJoin()
-{
-  pthread_join(th_actuator_value_, NULL);
-  pthread_join(th_trajectory_, NULL);
-  pthread_join(th_print_, NULL);
-}
-
-
-int main(int argc, char **argv)
-{
-  Folex *p_folex = new Folex();
-  p_folex->threadCreate();
-  p_folex->threadJoin();
-
-  return 0;
 }
