@@ -21,8 +21,9 @@ float Joint::present_angle[Joint::JOINT_ALL];
 float Joint::present_velocity[Joint::JOINT_ALL];
 float Joint::target_angle[Joint::JOINT_ALL];
 float Joint::target_velocity[Joint::JOINT_ALL];
+uint32_t Joint::present_velocity_raw[Joint::JOINT_ALL];
 uint32_t Joint::present_angle_value[Joint::JOINT_ALL];
-uint32_t Joint::present_velocity_value[Joint::JOINT_ALL];
+int32_t Joint::present_velocity_value[Joint::JOINT_ALL];
 uint32_t Joint::target_angle_value[Joint::JOINT_ALL];
 uint32_t Joint::target_velocity_value[Joint::JOINT_ALL];
 bool Joint::trajectory_gen = false;
@@ -32,6 +33,7 @@ std::vector<Waypoint> Joint::joint_waypoint;
 int main(int argc, char **argv)
 {
   Folex folex;
+  folex.init();
   folex.threadCreate();
   folex.threadJoin();
 

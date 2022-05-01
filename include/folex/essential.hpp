@@ -54,7 +54,8 @@ public:
   static float target_velocity[JOINT_ALL];
   // Dynamixel value
   static uint32_t present_angle_value[JOINT_ALL];
-  static uint32_t present_velocity_value[JOINT_ALL];
+  static uint32_t present_velocity_raw[JOINT_ALL];
+  static int32_t present_velocity_value[JOINT_ALL];
   static uint32_t target_angle_value[JOINT_ALL];
   static uint32_t target_velocity_value[JOINT_ALL];
 

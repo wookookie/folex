@@ -62,13 +62,17 @@ Folex::Folex()
 Folex::~Folex()
 {}
 
-void Folex::actuator()
+void Folex::init()
 {
-  Actuator *p_actuator = new Actuator();
+  p_actuator = new Actuator();
+  p_trajectory = new JointTrajectory();
 
   p_actuator->initActuator();
   p_actuator->enableActuator(Joint::JOINT_ALL);
+}
 
+void Folex::actuator()
+{
   float _target_pos = 0;
   float _target_vel = 0;
   uint16_t kLimitVelocity = 250;
@@ -135,15 +139,7 @@ void Folex::print()
     // Present velocity
     for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
     {
-      if (Joint::present_velocity_value[i] > 1023)
-      {
-        int32_t pv = -1 * (Joint::present_velocity_value[i] - 1024);
-        std::cout << pv << "\t";
-      }
-      else
-      {
-        std::cout << Joint::present_velocity_value[i] << "\t";
-      }
+      std::cout << Joint::present_velocity_value[i] << "\t";
     }
 
     std::cout << "\t";
@@ -177,8 +173,6 @@ void Folex::print()
 
 void Folex::trajectory()
 {
-  JointTrajectory *p_trajectory = new JointTrajectory();
-
   Waypoint start_point, end_point;
   start_point.velocity = 0;
   start_point.acceleration = 0;

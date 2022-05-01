@@ -52,10 +52,14 @@ public:
 class Folex : public FolexTask
 {
 private:
+  Actuator *p_actuator;
+  JointTrajectory *p_trajectory;
 
 public:
   Folex();
   ~Folex();
+
+  void init();
 
   void actuator();
   void print();

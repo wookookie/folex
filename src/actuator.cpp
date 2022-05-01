@@ -258,15 +258,27 @@ void Actuator::readPresentVelocity()
   {
     if (p.second == dxl_ax_.Address::AX_12A)
     {
-      readDataAX(p.first, getDataAddressAX(PRESENT_VELOCITY), Joint::present_velocity_value);
+      readDataAX(p.first, getDataAddressAX(PRESENT_VELOCITY), Joint::present_velocity_raw);
     }
     else if (p.second == dxl_xl_.Address::XL430_W250)
     {
-      readDataXL(p.first, getDataAddressXL(PRESENT_VELOCITY), Joint::present_velocity_value);
+      readDataXL(p.first, getDataAddressXL(PRESENT_VELOCITY), Joint::present_velocity_raw);
     }
     else
     {
       // error
+    }
+  }
+
+  for (auto p : joints_)
+  {
+    if (Joint::present_velocity_raw[p.first] > 1023)
+    {
+      Joint::present_velocity_value[p.first] = -1 * (Joint::present_velocity_raw[p.first] - 1024);
+    }
+    else
+    {
+      Joint::present_velocity_value[p.first] = Joint::present_velocity_raw[p.first];
     }
   }
 }
