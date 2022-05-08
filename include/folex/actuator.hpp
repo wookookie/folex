@@ -17,20 +17,13 @@
 #ifndef ACTUATOR_HPP
 #define ACTUATOR_HPP
 
-#include <dynamixel_sdk/dynamixel_sdk.h>
+#include <cmath>
 #include <iostream>
 #include <map>
-#include <ros/ros.h>
+#include <dynamixel_sdk/dynamixel_sdk.h>
 
+#include "essential.hpp"
 
-enum JointNumber
-{
-  JOINT_ALL,
-  JOINT_1, JOINT_2, JOINT_3,
-  JOINT_4, JOINT_5, JOINT_6,
-  JOINT_7, JOINT_8, JOINT_9,
-  JOINT_10, JOINT_11, JOINT_12
-};
 
 enum DataType
 {
@@ -42,7 +35,10 @@ enum DataType
 enum DataAddress
 {
   RETURN_DELAY_TIME,
-  TORQUE_ENABLE
+  TORQUE_ENABLE,
+  PRESENT_ANGLE,
+  PRESENT_VELOCITY,
+  TARGET_VELOCITY
 };
 
 enum DataPreset
@@ -58,10 +54,26 @@ public:
   {
     AX_12A = 12,
     RETURN_DELAY_TIME = 5,
-    TORQUE_ENABLE = 24
+    TORQUE_ENABLE = 24,
+    MOVING_SPEED = 32,
+    PRESENT_POSITION = 36,
+    PRESENT_SPEED = 38
   };
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
+
+  // Angle
+  static constexpr float kDegreeToRadian = M_PI / 180.0F;
+  static constexpr float kLimitAngleRadian = 300.0F * kDegreeToRadian;
+  static constexpr float kLimitAngleValue = 1023.0F;
+  static constexpr float kHomeAngleRadian = kLimitAngleRadian / 2;
+  static constexpr float kHomeAngleValue = kLimitAngleValue / 2;
+  static constexpr float kRadianPerValue = kLimitAngleRadian / kLimitAngleValue;
+  static constexpr float kValuePerRadian = kLimitAngleValue / kLimitAngleRadian;
+
+  // Data buffer
+  uint8_t buffer_uint8_;
+  uint16_t buffer_uint16_;
 };
 
 class DynamixelXL
@@ -71,31 +83,46 @@ public:
   {
     XL430_W250 = 1060,
     RETURN_DELAY_TIME = 9,
-    TORQUE_ENABLE = 64
+    TORQUE_ENABLE = 64,
+    GOAL_VELOCITY = 104,
+    PRESENT_VELOCITY = 128,
+    PRESENT_POSITION = 132
   };
   std::map<uint8_t, uint8_t> address_map_;
   uint8_t error_;
+
+  // Angle
+  static constexpr float kLimitAngleRadian = 2 * M_PI;
+  static constexpr float kLimitAngleValue = 4095.0F;
+  static constexpr float kHomeAngleRadian = kLimitAngleRadian / 2;
+  static constexpr float kHomeAngleValue = kLimitAngleValue / 2;
+  static constexpr float kRadianPerValue = kLimitAngleRadian / kLimitAngleValue;
+  static constexpr float kValuePerRadian = kLimitAngleValue / kLimitAngleRadian;
+
+  // Data buffer
+  uint8_t buffer_uint8_;
+  uint16_t buffer_uint16_;
+  uint32_t buffer_uint32_;
 };
 
 class Actuator
 {
 private:
-  // ROS
-  ros::NodeHandle nh_;
-
   // Dynamixel
   const char *kPortName = "/dev/U2D2";
   const float kProtocolVer = 1.0F;
   const uint32_t kBaudrate = 1000000;
   dynamixel::PortHandler *port_handler_;
   dynamixel::PacketHandler *packet_handler_;
-  DynamixelAX dxl_ax_;
-  DynamixelXL dxl_xl_;
 
   // Joint
   std::map<uint8_t, uint16_t> joints_;
 
 public:
+  // Dynamixel
+  DynamixelAX dxl_ax_;
+  DynamixelXL dxl_xl_;
+
   Actuator();
   ~Actuator();
 
@@ -109,10 +136,20 @@ public:
   uint16_t getDataAddressAX(uint16_t address);
   uint16_t getDataAddressXL(uint16_t address);
 
+  void readDataAX(uint8_t id, uint16_t address, uint32_t *data);
+  void readDataXL(uint8_t id, uint16_t address, uint32_t *data);
+  void readPresentAngle();
+  void readPresentVelocity();
+
   void writeData(uint8_t id, uint16_t address, uint32_t data);
   void writeDataALL(uint16_t address, uint32_t data);
   void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
+  void writeTargetVelocity();
+  void writeTargetVelocityZero();
+
+  void convertRadianToValue(float (&radian)[Joint::JOINT_ALL], uint32_t (&value)[Joint::JOINT_ALL]);
+  void convertValueToRadian(uint32_t (&value)[Joint::JOINT_ALL], float (&radian)[Joint::JOINT_ALL]);
 };
 
 # endif  // ACTUATOR_HPP

@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Hyunwook Choi (Daniel Choi)
+* Copyright 2022 Hyunwook Choi
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -14,41 +14,35 @@
 * limitations under the License.
 ******************************************************************************/
 
-#ifndef FOLEX_CONTROLLER_H
-#define FOLEX_CONTROLLER_H
+#ifndef TRAJECTORY_HPP
+#define TRAJECTORY_HPP
 
-#include <ros/ros.h>
+#include <chrono>
+#include <vector>
 
-#include <sensor_msgs/JointState.h>
-#include <std_msgs/String.h>
+#if __INTELLISENSE__
+#undef __ARM_NEON
+#undef __ARM_NEON__
+#endif
+#include <eigen3/Eigen/Eigen>
 
-#include "kinematics.h"
+#include "essential.hpp"
 
 
-class FolexController
+class JointTrajectory
 {
 private:
-  ros::NodeHandle nh;
+  float control_period = 0.036F;
+  Waypoint waypoint;
+  Eigen::Matrix<float, 6, 1> coefficient;
 
-  ros::Subscriber present_joint_value_sub;
-
-  sensor_msgs::JointState joint_state_msg;
-  ros::Publisher joint_states_pub;
-
-  std::vector<std::string> joint_names;
-
-  Folex::Kinematics kinematics;
-
+  void calculateCoefficient(Waypoint start, Waypoint end, float time);
+  void calculateWaypoint(float tick);
 
 public:
-  FolexController();
-  ~FolexController();
-
-  void publishJointStates(float joint_value[], float joint_speed[]);
-
-  void callbackJointState(const sensor_msgs::JointState::ConstPtr &msg);
-
-  void kinematicsTest(float (&joint)[12]);
+  JointTrajectory();
+  ~JointTrajectory();
+  void generateTrajectory(Waypoint start, Waypoint end, float time);
 };
 
-# endif  // FOLEX_CONTROLLER_H
+#endif  // TRAJECTORY_HPP

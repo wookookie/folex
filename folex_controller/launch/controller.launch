@@ -1,3 +1,0 @@
-<launch>
-  <node pkg="folex_controller" type="folex_controller" name="folex_controller" output="screen"/>
-</launch>
