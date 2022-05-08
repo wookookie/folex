@@ -23,7 +23,8 @@
 class QuadrupedTask
 {
 protected:
-  pthread_t th_actuator_value_;
+  pthread_t th_actuator_rxtx_;
+  pthread_t th_actuator_target_;
   pthread_t th_trajectory_;
   pthread_t th_print_;
 
@@ -31,13 +32,15 @@ public:
   QuadrupedTask();
   virtual ~QuadrupedTask();
 
-  virtual void actuator() = 0;
+  virtual void actuatorRxTx() = 0;
+  virtual void actuatorTargetCommand() = 0;
   virtual void print() = 0;
   virtual void trajectory() = 0;
 
   void threadCreate();
   void threadJoin();
-  static void *threadActuatorValue(void *arg);
+  static void *threadActuatorRxTx(void *arg);
+  static void *threadActuatorTargetCommand(void *arg);
   static void *threadPrintValue(void *arg);
   static void *threadTrajectory(void *arg);
 };

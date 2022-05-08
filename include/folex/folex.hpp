@@ -38,8 +38,8 @@ public:
   ~Folex();
 
   void init();
-
-  void actuator();
+  void actuatorRxTx();
+  void actuatorTargetCommand();
   void print();
   void trajectory();
 };

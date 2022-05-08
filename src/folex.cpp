@@ -32,54 +32,22 @@ void Folex::init()
   p_actuator->enableActuator(Joint::JOINT_ALL);
 }
 
-void Folex::actuator()
+void Folex::actuatorRxTx()
 {
-  float _target_pos = 0;
-  float _target_vel = 0;
-  uint16_t kLimitVelocity = 250;
-  uint16_t waypoint_index = 0;
-  uint8_t kTestJointNum = Joint::JointNumber::JOINT_6;
-
   while (true)
   {
-    if (Joint::trajectory_gen == true)
-    {
-      std::vector<Waypoint>::iterator it_joint_waypoint;
-      for (it_joint_waypoint = Joint::joint_waypoint.begin(); it_joint_waypoint != Joint::joint_waypoint.end(); it_joint_waypoint++)
-      {
-        _target_pos = it_joint_waypoint->position;
-        _target_vel = it_joint_waypoint->velocity;
+    p_actuator->readPresentAngle();
+    p_actuator->readPresentVelocity();
+    p_actuator->writeTargetVelocity();
+  }
+}
 
-        // Limit
-        if (abs(_target_vel) > kLimitVelocity)
-        {
-          _target_vel = copysign(kLimitVelocity, _target_vel);
-        }
-
-        // Convert value to CW
-        if (_target_vel < 0)
-        {
-          _target_vel = 1024 + abs(_target_vel);  // AX
-        }
-
-        p_actuator->readPresentAngle();
-        p_actuator->readPresentVelocity();
-
-        Joint::target_angle_value[kTestJointNum] = _target_pos;
-        Joint::target_velocity_value[kTestJointNum] = _target_vel;
-
-        p_actuator->writeTargetVelocity();
-      }
-
-      Joint::joint_waypoint.clear();
-      Joint::trajectory_gen = false;
-    }
-    else
-    {
-      p_actuator->readPresentAngle();
-      p_actuator->readPresentVelocity();
-      p_actuator->writeTargetVelocity();
-    }
+void Folex::actuatorTargetCommand()
+{
+  while (true)
+  {
+    // TO-DO
+    nanosleep(&ts_msec_1, NULL);
   }
 }
 

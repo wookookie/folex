@@ -25,21 +25,29 @@ QuadrupedTask::~QuadrupedTask()
 
 void QuadrupedTask::threadCreate()
 {
-  pthread_create(&th_actuator_value_, NULL, &QuadrupedTask::threadActuatorValue, this);
+  pthread_create(&th_actuator_rxtx_, NULL, &QuadrupedTask::threadActuatorRxTx, this);
+  pthread_create(&th_actuator_target_, NULL, &QuadrupedTask::threadActuatorTargetCommand, this);
   pthread_create(&th_print_, NULL, &QuadrupedTask::threadPrintValue, this);
   pthread_create(&th_trajectory_, NULL, &QuadrupedTask::threadTrajectory, this);
 }
 
 void QuadrupedTask::threadJoin()
 {
-  pthread_join(th_actuator_value_, NULL);
+  pthread_join(th_actuator_rxtx_, NULL);
+  pthread_join(th_actuator_target_, NULL);
   pthread_join(th_print_, NULL);
   pthread_join(th_trajectory_, NULL);
 }
 
-void *QuadrupedTask::threadActuatorValue(void *arg)
+void *QuadrupedTask::threadActuatorRxTx(void *arg)
 {
-  ((QuadrupedTask *)arg)->actuator();
+  ((QuadrupedTask *)arg)->actuatorRxTx();
+  return NULL;
+}
+
+void *QuadrupedTask::threadActuatorTargetCommand(void *arg)
+{
+  ((QuadrupedTask *)arg)->actuatorTargetCommand();
   return NULL;
 }
 
