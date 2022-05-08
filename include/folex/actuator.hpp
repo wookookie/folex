@@ -146,6 +146,7 @@ public:
   void writeDataAX(uint8_t id, uint16_t address, uint32_t data);
   void writeDataXL(uint8_t id, uint16_t address, uint32_t data);
   void writeTargetVelocity();
+  void writeTargetVelocityZero();
 
   void convertRadianToValue(float (&radian)[Joint::JOINT_ALL], uint32_t (&value)[Joint::JOINT_ALL]);
   void convertValueToRadian(uint32_t (&value)[Joint::JOINT_ALL], float (&radian)[Joint::JOINT_ALL]);

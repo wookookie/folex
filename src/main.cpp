@@ -29,13 +29,30 @@ uint32_t Joint::target_velocity_value[Joint::JOINT_ALL];
 bool Joint::trajectory_gen = false;
 std::vector<Waypoint> Joint::joint_waypoint;
 
+// Class pointer
+Folex *p_folex;
+
+
+void signalHandler(int signal)
+{
+  std::cout << std::endl;
+
+  p_folex->actuatorDisable();
+  std::cout << "[SIGNAL] Actuator disabled" << std::endl;
+
+  exit(signal);
+}
 
 int main(int argc, char **argv)
 {
-  Folex folex;
-  folex.init();
-  folex.threadCreate();
-  folex.threadJoin();
+  p_folex = new Folex();
+  p_folex->init();
+
+  // Install a signal handler
+  signal(SIGINT, signalHandler);
+
+  p_folex->threadCreate();
+  p_folex->threadJoin();
 
   return 0;
 }

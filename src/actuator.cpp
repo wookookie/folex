@@ -377,6 +377,25 @@ void Actuator::writeTargetVelocity()
   }
 }
 
+void Actuator::writeTargetVelocityZero()
+{
+  for (auto p : joints_)
+  {
+    if (p.second == dxl_ax_.Address::AX_12A)
+    {
+      writeDataAX(p.first, getDataAddressAX(DataAddress::TARGET_VELOCITY), 0);
+    }
+    else if (p.second == dxl_xl_.Address::XL430_W250)
+    {
+      writeDataXL(p.first, getDataAddressXL(DataAddress::TARGET_VELOCITY), 0);
+    }
+    else
+    {
+      // error
+    }
+  }
+}
+
 void Actuator::convertRadianToValue(float (&radian)[12], uint32_t (&value)[12])
 {
   for (auto p : joints_)

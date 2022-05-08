@@ -17,6 +17,7 @@
 #ifndef FOLEX_HPP
 #define FOLEX_HPP
 
+#include <csignal>
 #include <iostream>
 #include <time.h>
 
@@ -30,6 +31,8 @@
 class Folex : public QuadrupedTask
 {
 private:
+  bool actuator_disable = false;
+
   Actuator *p_actuator;
   JointTrajectory *p_trajectory;
 
@@ -38,6 +41,9 @@ public:
   ~Folex();
 
   void init();
+  static void signalHandler(int signal);
+
+  void actuatorDisable();
   void actuatorRxTx();
   void actuatorTargetCommand();
   void print();

@@ -32,13 +32,27 @@ void Folex::init()
   p_actuator->enableActuator(Joint::JOINT_ALL);
 }
 
+void Folex::actuatorDisable()
+{
+  actuator_disable = true;
+  nanosleep(&ts_msec_100, NULL);
+}
+
 void Folex::actuatorRxTx()
 {
   while (true)
   {
     p_actuator->readPresentAngle();
     p_actuator->readPresentVelocity();
-    p_actuator->writeTargetVelocity();
+
+    if (actuator_disable == true)
+    {
+      p_actuator->writeTargetVelocityZero();
+    }
+    else
+    {
+      p_actuator->writeTargetVelocity();
+    }
   }
 }
 
