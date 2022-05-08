@@ -14,34 +14,32 @@
 * limitations under the License.
 ******************************************************************************/
 
-#ifndef FOLEX_HPP
-#define FOLEX_HPP
+#ifndef QUADRUPED_TASK_HPP
+#define QUADRUPED_TASK_HPP
 
-#include <iostream>
-#include <time.h>
-
-#include "actuator.hpp"
-#include "essential.hpp"
-#include "kinematics.hpp"
-#include "quadruped_task.hpp"
-#include "trajectory.hpp"
+#include <pthread.h>
 
 
-class Folex : public QuadrupedTask
+class QuadrupedTask
 {
-private:
-  Actuator *p_actuator;
-  JointTrajectory *p_trajectory;
+protected:
+  pthread_t th_actuator_value_;
+  pthread_t th_trajectory_;
+  pthread_t th_print_;
 
 public:
-  Folex();
-  ~Folex();
+  QuadrupedTask();
+  virtual ~QuadrupedTask();
 
-  void init();
+  virtual void actuator() = 0;
+  virtual void print() = 0;
+  virtual void trajectory() = 0;
 
-  void actuator();
-  void print();
-  void trajectory();
+  void threadCreate();
+  void threadJoin();
+  static void *threadActuatorValue(void *arg);
+  static void *threadPrintValue(void *arg);
+  static void *threadTrajectory(void *arg);
 };
 
-#endif  // FOLEX_HPP
+#endif  // QUADRUPED_TASK_HPP

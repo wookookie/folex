@@ -17,45 +17,6 @@
 #include "folex.hpp"
 
 
-FolexTask::FolexTask()
-{}
-
-FolexTask::~FolexTask()
-{}
-
-void FolexTask::threadCreate()
-{
-  pthread_create(&th_actuator_value_, NULL, &FolexTask::threadActuatorValue, this);
-  pthread_create(&th_print_, NULL, &FolexTask::threadPrintValue, this);
-  pthread_create(&th_trajectory_, NULL, &FolexTask::threadTrajectory, this);
-}
-
-void FolexTask::threadJoin()
-{
-  pthread_join(th_actuator_value_, NULL);
-  pthread_join(th_print_, NULL);
-  pthread_join(th_trajectory_, NULL);
-}
-
-void *FolexTask::threadActuatorValue(void *arg)
-{
-  ((FolexTask *)arg)->actuator();
-  return NULL;
-}
-
-void *FolexTask::threadPrintValue(void *arg)
-{
-  ((FolexTask *)arg)->print();
-  return NULL;
-}
-
-void *FolexTask::threadTrajectory(void *arg)
-{
-  ((FolexTask *)arg)->trajectory();
-  return NULL;
-}
-
-
 Folex::Folex()
 {}
 

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(folex src/main.cpp
   src/actuator.cpp
   src/folex.cpp
+  src/quadruped_task.cpp
   src/trajectory.cpp
 )
 
