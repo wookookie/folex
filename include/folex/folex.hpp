@@ -19,7 +19,6 @@
 
 #include <csignal>
 #include <iostream>
-#include <time.h>
 
 #include "actuator.hpp"
 #include "essential.hpp"

@@ -17,7 +17,8 @@
 #ifndef ESSENTIAL_HPP
 #define ESSENTIAL_HPP
 
-#include <iostream>
+#include <ctime>
+#include <vector>
 
 
 // Sleep time
