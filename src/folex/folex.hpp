@@ -22,7 +22,6 @@
 
 #include "actuator.hpp"
 #include "essential.hpp"
-#include "kinematics.hpp"
 #include "quadruped_task.hpp"
 #include "trajectory.hpp"
 
