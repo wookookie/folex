@@ -7,7 +7,7 @@ add_library(actuator STATIC
 target_include_directories(actuator
   PRIVATE
     ${CMAKE_SOURCE_DIR}/include
-    /usr/local/include/dynamixel_sdk
+    /usr/local/include
 )
 
 target_link_libraries(actuator
