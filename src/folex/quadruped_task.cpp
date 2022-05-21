@@ -26,9 +26,13 @@ QuadrupedTask::~QuadrupedTask()
 void QuadrupedTask::threadCreate()
 {
   pthread_create(&th_actuator_rxtx_, NULL, &QuadrupedTask::threadActuatorRxTx, this);
+  pthread_setname_np(th_actuator_rxtx_, "actuator_rxtx");
   pthread_create(&th_actuator_target_, NULL, &QuadrupedTask::threadActuatorTargetCommand, this);
+  pthread_setname_np(th_actuator_target_, "actuator_target");
   pthread_create(&th_print_, NULL, &QuadrupedTask::threadPrintValue, this);
+  pthread_setname_np(th_print_, "print");
   pthread_create(&th_trajectory_, NULL, &QuadrupedTask::threadTrajectory, this);
+  pthread_setname_np(th_trajectory_, "trajectory");
 }
 
 void QuadrupedTask::threadJoin()
