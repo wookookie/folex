@@ -82,6 +82,7 @@ void Folex::socketSend()
   while (true)
   {
     p_socket_->sendData();
+    nanosleep(&ts_msec_10, NULL);
   }
 }
 
