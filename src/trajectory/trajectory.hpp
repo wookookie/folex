@@ -17,7 +17,6 @@
 #ifndef TRAJECTORY_HPP
 #define TRAJECTORY_HPP
 
-#include <chrono>
 #include <vector>
 
 #if __INTELLISENSE__

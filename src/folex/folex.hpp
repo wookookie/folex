@@ -18,10 +18,7 @@
 #define FOLEX_HPP
 
 #include <csignal>
-#include <iostream>
-
 #include "actuator.hpp"
-#include "essential.hpp"
 #include "quadruped_task.hpp"
 #include "socket_client.hpp"
 #include "trajectory.hpp"

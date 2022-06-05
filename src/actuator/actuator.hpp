@@ -18,10 +18,8 @@
 #define ACTUATOR_HPP
 
 #include <cmath>
-#include <iostream>
 #include <map>
 #include <dynamixel_sdk/dynamixel_sdk.h>
-
 #include "essential.hpp"
 
 

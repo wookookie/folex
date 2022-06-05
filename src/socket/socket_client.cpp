@@ -15,14 +15,12 @@
 ******************************************************************************/
 
 #include <iostream>
-// TCP Socket
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-// FOLEX
 #include "essential.hpp"
 #include "socket_client.hpp"
 

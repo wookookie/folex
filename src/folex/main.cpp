@@ -14,6 +14,7 @@
 * limitations under the License.
 ******************************************************************************/
 
+#include <iostream>
 #include "folex.hpp"
 
 // Declare the static variables

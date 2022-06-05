@@ -14,6 +14,8 @@
 * limitations under the License.
 ******************************************************************************/
 
+#include <iostream>
+#include "essential.hpp"
 #include "folex.hpp"
 
 
