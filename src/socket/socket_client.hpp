@@ -14,42 +14,25 @@
 * limitations under the License.
 ******************************************************************************/
 
-#ifndef FOLEX_HPP
-#define FOLEX_HPP
-
-#include <csignal>
-#include <iostream>
-
-#include "actuator.hpp"
-#include "essential.hpp"
-#include "quadruped_task.hpp"
-#include "socket_client.hpp"
-#include "trajectory.hpp"
+#ifndef SOCKET_CLIENT_HPP
+#define SOCKET_CLIENT_HPP
 
 
-class Folex : public QuadrupedTask
+class SocketClient
 {
 private:
-  bool actuator_disable = false;
-
-  Actuator *p_actuator;
-  JointTrajectory *p_trajectory;
-  SocketClient *p_socket_;
+  // Socket file descriptor
+  int socketfd_recv_;
+  int socketfd_send_;
 
 public:
-  Folex();
-  ~Folex();
+  SocketClient();
+  ~SocketClient();
 
-  void init();
-  static void signalHandler(int signal);
-
-  void actuatorDisable();
-  void actuatorRxTx();
-  void actuatorTargetCommand();
-  void print();
-  void socketReceive();
-  void socketSend();
-  void trajectory();
+  void connectServer();
+  void closeConnection();
+  void receiveData();
+  void sendData();
 };
 
-#endif  // FOLEX_HPP
+#endif // SOCKET_CLIENT_HPP

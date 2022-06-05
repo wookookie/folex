@@ -6,4 +6,5 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 add_subdirectory(src/actuator)
 add_subdirectory(src/folex)
+add_subdirectory(src/socket)
 add_subdirectory(src/trajectory)

@@ -26,10 +26,12 @@ Folex::~Folex()
 void Folex::init()
 {
   p_actuator = new Actuator();
+  p_socket_ = new SocketClient();
   p_trajectory = new JointTrajectory();
 
   p_actuator->initActuator();
   p_actuator->enableActuator(Joint::JOINT_ALL);
+  p_socket_->connectServer();
 }
 
 void Folex::actuatorDisable()
@@ -111,6 +113,22 @@ void Folex::print()
 
     _count++;
     nanosleep(&ts_msec_100, NULL);
+  }
+}
+
+void Folex::socketReceive()
+{
+  while (true)
+  {
+    p_socket_->receiveData();
+  }
+}
+
+void Folex::socketSend()
+{
+  while (true)
+  {
+    p_socket_->sendData();
   }
 }
 

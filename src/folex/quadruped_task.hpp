@@ -27,6 +27,8 @@ protected:
   pthread_t th_actuator_target_;
   pthread_t th_trajectory_;
   pthread_t th_print_;
+  pthread_t th_socket_recv_;
+  pthread_t th_socket_send_;
 
 public:
   QuadrupedTask();
@@ -35,6 +37,8 @@ public:
   virtual void actuatorRxTx() = 0;
   virtual void actuatorTargetCommand() = 0;
   virtual void print() = 0;
+  virtual void socketReceive() = 0;
+  virtual void socketSend() = 0;
   virtual void trajectory() = 0;
 
   void threadCreate();
@@ -42,6 +46,8 @@ public:
   static void *threadActuatorRxTx(void *arg);
   static void *threadActuatorTargetCommand(void *arg);
   static void *threadPrintValue(void *arg);
+  static void *threadSocketReceive(void *arg);
+  static void *threadSocketSend(void *arg);
   static void *threadTrajectory(void *arg);
 };
 

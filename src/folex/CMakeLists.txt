@@ -10,6 +10,7 @@ target_include_directories(folex
   PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src/actuator
+    ${CMAKE_SOURCE_DIR}/src/socket
     ${CMAKE_SOURCE_DIR}/src/trajectory
 )
 
@@ -17,5 +18,6 @@ target_link_libraries(folex
   PRIVATE
     actuator
     pthread
+    socket
     trajectory
 )

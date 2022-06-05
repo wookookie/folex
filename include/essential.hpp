@@ -20,6 +20,10 @@
 #include <ctime>
 #include <vector>
 
+// TCP Socket
+#define TCP_HOSTNAME          "127.0.0.1"
+#define TCP_PORT_SEND         9090          // [SERVER] <- [CLIENT]
+#define TCP_PORT_RECV         9091          // [SERVER] -> [CLIENT]
 
 // Sleep time
 static struct timespec ts_msec_1 = {.tv_sec = 0, .tv_nsec = 1000000};
