@@ -29,8 +29,6 @@ void QuadrupedTask::threadCreate()
   pthread_setname_np(th_actuator_rxtx_, "actuator_rxtx");
   pthread_create(&th_actuator_target_, NULL, &QuadrupedTask::threadActuatorTargetCommand, this);
   pthread_setname_np(th_actuator_target_, "actuator_target");
-  pthread_create(&th_print_, NULL, &QuadrupedTask::threadPrintValue, this);
-  pthread_setname_np(th_print_, "print");
   pthread_create(&th_socket_recv_, NULL, &QuadrupedTask::threadSocketReceive, this);
   pthread_setname_np(th_socket_recv_, "socket_recv");
   pthread_create(&th_socket_send_, NULL, &QuadrupedTask::threadSocketSend, this);
@@ -43,7 +41,6 @@ void QuadrupedTask::threadJoin()
 {
   pthread_join(th_actuator_rxtx_, NULL);
   pthread_join(th_actuator_target_, NULL);
-  pthread_join(th_print_, NULL);
   pthread_join(th_socket_recv_, NULL);
   pthread_join(th_socket_send_, NULL);
   pthread_join(th_trajectory_, NULL);
@@ -58,12 +55,6 @@ void *QuadrupedTask::threadActuatorRxTx(void *arg)
 void *QuadrupedTask::threadActuatorTargetCommand(void *arg)
 {
   ((QuadrupedTask *)arg)->actuatorTargetCommand();
-  return NULL;
-}
-
-void *QuadrupedTask::threadPrintValue(void *arg)
-{
-  ((QuadrupedTask *)arg)->print();
   return NULL;
 }
 

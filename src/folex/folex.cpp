@@ -67,55 +67,6 @@ void Folex::actuatorTargetCommand()
   }
 }
 
-void Folex::print()
-{
-  uint32_t _count = 1;
-  while (true)
-  {
-    // Count
-    std::cout << "COUNT: " << _count << "\t";
-    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
-    {
-      std::cout << Joint::present_angle_value[i] << "\t";
-    }
-
-    std::cout << "\t";
-
-    // Present velocity
-    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
-    {
-      std::cout << Joint::present_velocity_value[i] << "\t";
-    }
-
-    std::cout << "\t";
-
-    // Target velocity
-    for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
-    {
-      if (Joint::target_velocity_value[i] > 1023)
-      {
-        int32_t tv = -1 * (Joint::target_velocity_value[i] - 1024);
-        std::cout << tv << "\t";
-      }
-      else
-      {
-        std::cout << Joint::target_velocity_value[i] << "\t";
-      }
-    }
-
-    // Target position
-    // for (uint8_t i = Joint::JOINT_1; i < Joint::JOINT_ALL; i++)
-    // {
-    //   std::cout << Joint::target_angle_value[i] << "\t";
-    // }
-
-    std::cout << std::endl;
-
-    _count++;
-    nanosleep(&ts_msec_100, NULL);
-  }
-}
-
 void Folex::socketReceive()
 {
   while (true)

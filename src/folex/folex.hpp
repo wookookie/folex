@@ -46,7 +46,6 @@ public:
   void actuatorDisable();
   void actuatorRxTx();
   void actuatorTargetCommand();
-  void print();
   void socketReceive();
   void socketSend();
   void trajectory();
