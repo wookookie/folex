@@ -35,5 +35,5 @@ $ cmake --build .
 ```
 $ cd scripts
 $ chmod +x create_udev_rules
-$ ./create_udev_rules
+$ ./create_udev_rules.sh
 ```
